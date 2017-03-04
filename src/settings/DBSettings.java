@@ -15,6 +15,17 @@ public class DBSettings {
 		return s;
 	}
 	
+	public DBSettings() {
+		
+	}
+	
+	public DBSettings (String database, String databaseType, String username, String password) {
+		this.database = database;
+		this.databaseType = databaseType;
+		this.username = username;
+		this.password = password;
+	}
+	
 	public static DBSettings getDefault() {
 		return getLocalDefault();
 	}

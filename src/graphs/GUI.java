@@ -21,12 +21,15 @@ import java.util.ArrayList;
 import java.awt.event.ActionEvent;
 import com.google.common.collect.Lists;
 import db_wrappers.DBConnection;
+import settings.DBSettings;
 
 public class GUI {
 
 	private JFrame frame;
 	private JFrame dimensions;
 	private JFrame measures;
+	private JFrame dbconnection;
+	private DBSettings connection;
 	private final JPanel panel = new JPanel();
 	private final JPanel panel_2 = new JPanel();
 	private List<String> userMeasures = new ArrayList<String>();
@@ -189,9 +192,14 @@ public class GUI {
 		list_6.setBounds(119, 113, 185, 20);
 		panel_4.add(list_6);
 		
-		JButton btnAddFilter = new JButton("Add Filter");
-		btnAddFilter.setBounds(370, 60, 161, 29);
-		panel_4.add(btnAddFilter);
+		JButton btnAddDatabase = new JButton("Add Database");
+		btnAddDatabase.setBounds(370, 60, 161, 29);
+		panel_4.add(btnAddDatabase);
+		btnAddDatabase.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				initializeConnection();
+			}
+		});
 		
 		JButton btnGetRecommendations = new JButton("Get Results");
 		btnGetRecommendations.setBounds(396, 244, 192, 29);
@@ -201,6 +209,64 @@ public class GUI {
 	        	 initializeDimensions(graph.getColumns());
 	         }          
 	      });
+	}
+	
+	private void initializeConnection() {
+		dbconnection = new JFrame();
+		dbconnection.setBounds(200, 100, 500, 400);
+		dbconnection.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		dbconnection.getContentPane().setLayout(null);
+		JPanel mainPanel = new JPanel();
+        mainPanel.setLayout(null);
+        mainPanel.setBounds(0, 0, 600, 500);
+        
+        JPanel hostAddress = new JPanel();
+        hostAddress.setLayout(null);
+        hostAddress.setBounds(0, 0, 600, 500);
+        
+		JLabel lblHost = new JLabel("Host Address");
+		lblHost.setFont(new Font("Tahoma", Font.PLAIN, 18));
+		lblHost.setBounds(50, 50, 200, 20);
+		hostAddress.add(lblHost);
+		
+		JTextField textHost = new JTextField();
+		textHost.setBounds(200, 50, 200, 20);
+		hostAddress.add(textHost);
+		     
+        JLabel lblType = new JLabel("Database Type");
+		lblType.setFont(new Font("Tahoma", Font.PLAIN, 18));
+		lblType.setBounds(50, 100, 200, 20);
+		hostAddress.add(lblType);
+		
+		JTextField textType = new JTextField();
+		textType.setBounds(200, 100, 200, 20);
+		hostAddress.add(textType);
+		      
+        JLabel lblUsername = new JLabel("Username");
+		lblUsername.setFont(new Font("Tahoma", Font.PLAIN, 18));
+		lblUsername.setBounds(50, 150, 200, 20);
+		hostAddress.add(lblUsername);
+		
+		JTextField textUsername = new JTextField();
+		textUsername.setBounds(200, 150, 200, 20);
+		hostAddress.add(textUsername);
+        
+        JLabel lblPassword = new JLabel("Password");
+		lblPassword.setFont(new Font("Tahoma", Font.PLAIN, 18));
+		lblPassword.setBounds(50, 200, 200, 20);
+		hostAddress.add(lblPassword);
+		
+		JTextField textPassword = new JTextField();
+		textPassword.setBounds(200, 200, 200, 20);
+		hostAddress.add(textPassword);
+		
+		JButton btnAddDatabaseSettings = new JButton("Set Database");
+		btnAddDatabaseSettings.setBounds(175, 275, 150, 30);
+		hostAddress.add(btnAddDatabaseSettings);
+		
+		mainPanel.add(hostAddress);
+		dbconnection.getContentPane().add(mainPanel);
+        dbconnection.setVisible(true);
 	}
 	
 	private void initializeDimensions(java.util.List<String> list) {
