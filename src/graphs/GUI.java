@@ -29,7 +29,8 @@ public class GUI {
 	private JFrame dimensions;
 	private JFrame measures;
 	private JFrame dbconnection;
-	private DBSettings connection;
+	private DBSettings dbsettings;
+	private DBConnection connection;
 	private final JPanel panel = new JPanel();
 	private final JPanel panel_2 = new JPanel();
 	private List<String> userMeasures = new ArrayList<String>();
@@ -206,8 +207,12 @@ public class GUI {
 		panel_3.add(btnGetRecommendations);
 		btnGetRecommendations.addActionListener(new ActionListener() {
 	         public void actionPerformed(ActionEvent e) {
-	        	 initializeDimensions(graph.getColumns());
-	         }          
+	        	if (dbsettings == null) {
+	        		JOptionPane.showMessageDialog(frame, "Please Specify A Database");
+		     	} else {
+		     		initializeDimensions(graph.getColumns(dbsettings));
+		     	}
+	         }
 	      });
 	}
 	
@@ -256,14 +261,31 @@ public class GUI {
 		lblPassword.setBounds(50, 200, 200, 20);
 		hostAddress.add(lblPassword);
 		
-		JTextField textPassword = new JTextField();
+		JPasswordField textPassword = new JPasswordField();
+		textPassword.setEchoChar('*');
 		textPassword.setBounds(200, 200, 200, 20);
 		hostAddress.add(textPassword);
 		
 		JButton btnAddDatabaseSettings = new JButton("Set Database");
 		btnAddDatabaseSettings.setBounds(175, 275, 150, 30);
 		hostAddress.add(btnAddDatabaseSettings);
-		
+		btnAddDatabaseSettings.addActionListener(new ActionListener() {
+	         public void actionPerformed(ActionEvent e) {
+	        	connection = new DBConnection();
+	        	dbsettings = new DBSettings(textHost.getText(), textType.getText(),
+	        			textUsername.getText(), new String(textPassword.getPassword()));
+	     		if (!connection.hasConnection()) {
+	     			System.out.println("DB connection not specified, using default connection params");
+	     			// populate connection from settings
+	     			if (!connection.connectToDatabase(dbsettings)) {
+	     				JOptionPane.showMessageDialog(dbconnection, "Cannot Connect to Database");
+	     				//System.out.println("Cannot connect to DB with default settings");
+	     			} else {
+	     				dbconnection.setVisible(false);
+	     			}
+	     		}
+	         }          
+	      });
 		mainPanel.add(hostAddress);
 		dbconnection.getContentPane().add(mainPanel);
         dbconnection.setVisible(true);
@@ -297,7 +319,7 @@ public class GUI {
 	        		 }
 	        	 }
 	        	 dimensions.setVisible(false);
-	        	initializeMeasures(graph.getIntegerColumns());
+	        	 initializeMeasures(graph.getIntegerColumns(dbsettings));
 	         }          
 	      });
 		mainPanel.add(checklistPanel);
@@ -335,7 +357,7 @@ public class GUI {
 	        	 measures.setVisible(false);
 	        	 System.out.println(userDimensions);
 	        	 System.out.println(userMeasures);
-	        	 graph.startSeeDB(userDimensions, userMeasures, query);
+	        	 graph.startSeeDB(userDimensions, userMeasures, query, dbsettings);
 	         }          
 	      });
 		mainPanel.add(checklistPanel);

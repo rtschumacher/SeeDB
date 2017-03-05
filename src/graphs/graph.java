@@ -8,6 +8,8 @@ import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.JOptionPane;
+
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel; 
 import org.jfree.chart.JFreeChart; 
@@ -62,7 +64,7 @@ public class graph extends ApplicationFrame
       return dataset; 
    }
    
-   public static List<String> getColumns(){
+   public static List<String> getColumns(DBSettings dbsettings){
 	    String defaultQuery1 = "SELECT * FROM bank WHERE age=35";
 		List<String> allColumns = new ArrayList<String>();
 		ExperimentalSettings settings = new ExperimentalSettings();
@@ -73,7 +75,7 @@ public class graph extends ApplicationFrame
 		if (!connection.hasConnection()) {
 			System.out.println("DB connection not specified, using default connection params");
 			// populate connection from settings
-			if (!connection.connectToDatabase(DBSettings.getDefault())) {
+			if (!connection.connectToDatabase(dbsettings)) {
 				System.out.println("Cannot connect to DB with default settings");
 				return null;
 			}
@@ -102,7 +104,7 @@ public class graph extends ApplicationFrame
 		return allColumns;
    }
    
-   public static List<String> getIntegerColumns(){
+   public static List<String> getIntegerColumns(DBSettings dbsettings){
 	    String defaultQuery1 = "SELECT * FROM bank WHERE age=35";
 		List<String> allColumns = new ArrayList<String>();
 		ExperimentalSettings settings = new ExperimentalSettings();
@@ -113,7 +115,7 @@ public class graph extends ApplicationFrame
 		if (!connection.hasConnection()) {
 			System.out.println("DB connection not specified, using default connection params");
 			// populate connection from settings
-			if (!connection.connectToDatabase(DBSettings.getDefault())) {
+			if (!connection.connectToDatabase(dbsettings)) {
 				System.out.println("Cannot connect to DB with default settings");
 				return null;
 			}
@@ -125,12 +127,13 @@ public class graph extends ApplicationFrame
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
-		allColumns =  connection.getIntegerColumns(inputQueries[0].tables.get(0));
+		allColumns = connection.getIntegerColumns(inputQueries[0].tables.get(0));
 		connection.close();
 		return allColumns;
   }
    
-   public static void startSeeDB(List<String> dimensions, List<String> measures, String query)
+   public static void startSeeDB(List<String> dimensions, List<String> measures, String query,
+		   DBSettings dbsettings)
    {	
 	    //String defaultQuery1 = "SELECT * FROM bank WHERE age=35"
 	   	String defaultQuery1 = query;
@@ -144,7 +147,7 @@ public class graph extends ApplicationFrame
 		if (!connection.hasConnection()) {
 			System.out.println("DB connection not specified, using default connection params");
 			// populate connection from settings
-			if (!connection.connectToDatabase(DBSettings.getDefault())) {
+			if (!connection.connectToDatabase(dbsettings)) {
 				System.out.println("Cannot connect to DB with default settings");
 				return;
 			}
