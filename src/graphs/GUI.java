@@ -35,7 +35,7 @@ public class GUI {
 	private final JPanel panel_2 = new JPanel();
 	private List<String> userMeasures = new ArrayList<String>();
 	private List<String> userDimensions = new ArrayList<String>();
-	private String query = new String();
+	private String query = null;
 	
 
 	/**
@@ -209,8 +209,10 @@ public class GUI {
 	         public void actionPerformed(ActionEvent e) {
 	        	if (dbsettings == null) {
 	        		JOptionPane.showMessageDialog(frame, "Please Specify A Database");
+		     	} else if (query == null){
+		     		JOptionPane.showMessageDialog(frame, "Please Specify A Dataset");
 		     	} else {
-		     		initializeDimensions(graph.getColumns(dbsettings));
+		     		initializeDimensions(graph.getColumns(dbsettings, query));
 		     	}
 	         }
 	      });
@@ -279,6 +281,7 @@ public class GUI {
 	     			// populate connection from settings
 	     			if (!connection.connectToDatabase(dbsettings)) {
 	     				JOptionPane.showMessageDialog(dbconnection, "Cannot Connect to Database");
+	     				dbsettings = null;
 	     				//System.out.println("Cannot connect to DB with default settings");
 	     			} else {
 	     				dbconnection.setVisible(false);
@@ -319,7 +322,7 @@ public class GUI {
 	        		 }
 	        	 }
 	        	 dimensions.setVisible(false);
-	        	 initializeMeasures(graph.getIntegerColumns(dbsettings));
+	        	 initializeMeasures(graph.getIntegerColumns(dbsettings, query));
 	         }          
 	      });
 		mainPanel.add(checklistPanel);

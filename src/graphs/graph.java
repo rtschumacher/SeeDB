@@ -64,8 +64,8 @@ public class graph extends ApplicationFrame
       return dataset; 
    }
    
-   public static List<String> getColumns(DBSettings dbsettings){
-	    String defaultQuery1 = "SELECT * FROM bank WHERE age=35";
+   public static List<String> getColumns(DBSettings dbsettings, String defaultQuery1){
+	    //String defaultQuery1 = "SELECT * FROM bank WHERE age=35 AND 1=0";
 		List<String> allColumns = new ArrayList<String>();
 		ExperimentalSettings settings = new ExperimentalSettings();
 		settings.differenceOperators = Lists.newArrayList();
@@ -104,8 +104,8 @@ public class graph extends ApplicationFrame
 		return allColumns;
    }
    
-   public static List<String> getIntegerColumns(DBSettings dbsettings){
-	    String defaultQuery1 = "SELECT * FROM bank WHERE age=35";
+   public static List<String> getIntegerColumns(DBSettings dbsettings, String defaultQuery1){
+	    //String defaultQuery1 = "SELECT * FROM bank WHERE age=35 AND 1=0";
 		List<String> allColumns = new ArrayList<String>();
 		ExperimentalSettings settings = new ExperimentalSettings();
 		settings.differenceOperators = Lists.newArrayList();

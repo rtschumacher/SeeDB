@@ -1056,3 +1056,12 @@ ClientTargetViewExecutionTime: 0
 ClientComparisonViewExecutionTime: 0
 Executor: 238
 nQueries: 8
+Initialize: 100
+Optimizer: 0
+TempTableCreation: 36
+DBMSTargetViewExecutionTime: 1
+DBMSComparisonViewExecutionTime: 0
+ClientTargetViewExecutionTime: 0
+ClientComparisonViewExecutionTime: 0
+Executor: 358
+nQueries: 8
