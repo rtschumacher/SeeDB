@@ -65,7 +65,7 @@ public class GUI {
 	 * Initialize the contents of the frame.
 	 */
 	private void initializeMainGUI() {
-		frame = new JFrame();
+		frame = new JFrame("SeeDB");
 		frame.setBounds(100, 100, 1161, 711);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().setLayout(null);
@@ -219,7 +219,7 @@ public class GUI {
 	}
 	
 	private void initializeConnection() {
-		dbconnection = new JFrame();
+		dbconnection = new JFrame("Database Connection");
 		dbconnection.setBounds(200, 100, 500, 400);
 		dbconnection.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		dbconnection.getContentPane().setLayout(null);
@@ -295,24 +295,26 @@ public class GUI {
 	}
 	
 	private void initializeDimensions(java.util.List<String> list) {
-		dimensions = new JFrame();
-		dimensions.setBounds(200, 100, 711, 1200);
+		dimensions = new JFrame("Dimensions");
+		dimensions.setBounds(200, 100, 750, ((list.size()/3 + 1)*50) + 150);
 		dimensions.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		dimensions.getContentPane().setLayout(null);
 		JPanel mainPanel = new JPanel();
-        mainPanel.setLayout(new BorderLayout());
-        mainPanel.setBounds(0, 0, 500, 1100);
+        mainPanel.setLayout(null);
+        mainPanel.setBounds(0, 0, 750, ((list.size()/3 + 1)*50) + 150);
 		JPanel checklistPanel = new JPanel();
 		checklistPanel.setVisible(true);
-		checklistPanel.setBounds(0, 0, 500, 1100);
+		checklistPanel.setLayout(null);
+		checklistPanel.setBounds(0, 0, 750, ((list.size()/3 + 1)*50) + 150);
 		JCheckBox[] checkboxes = new JCheckBox[list.size()];
 		for (int i=0; i < list.size(); i++){
 			JCheckBox temp = new JCheckBox(list.get(i));
+			temp.setBounds(((i%3)*200)+100, ((i/3)*50)+20, 200, 50);
 	        checklistPanel.add(temp);
 	        checkboxes[i] = temp;
 		}
 		JButton btnSetDimensions = new JButton("Set Dimensions");
-		btnSetDimensions.setBounds(396, 244, 192, 29);
+		btnSetDimensions.setBounds(166, ((list.size()/3 + 1)*50)+30, 150, 30);
 		checklistPanel.add(btnSetDimensions);
 		btnSetDimensions.addActionListener(new ActionListener() {
 	         public void actionPerformed(ActionEvent e) {
@@ -325,30 +327,42 @@ public class GUI {
 	        	 initializeMeasures(graph.getIntegerColumns(dbsettings, query));
 	         }          
 	      });
+		JButton btnSelectAll = new JButton("Select All");
+		btnSelectAll.setBounds(400, ((list.size()/3 + 1)*50)+30, 150, 30);
+		checklistPanel.add(btnSelectAll);
+		btnSelectAll.addActionListener(new ActionListener() {
+	         public void actionPerformed(ActionEvent e) {
+	        	 for (int i=0; i < checkboxes.length; i++){
+	        		 checkboxes[i].setSelected(true);
+	        	 }
+	         }          
+	      });
 		mainPanel.add(checklistPanel);
 		dimensions.add(mainPanel);
 		dimensions.setVisible(true);
 	}
 	
 	private void initializeMeasures(java.util.List<String> list) {
-		measures = new JFrame();
-		measures.setBounds(200, 100, 711, 1200);
+		measures = new JFrame("Measures");
+		measures.setBounds(200, 100, 750, ((list.size()/3 + 1)*50) + 150);
 		measures.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		measures.getContentPane().setLayout(null);
 		JPanel mainPanel = new JPanel();
-        mainPanel.setLayout(new BorderLayout());
-        mainPanel.setBounds(0, 0, 500, 1100);
+        mainPanel.setLayout(null);
+        mainPanel.setBounds(0, 0, 750, ((list.size()/3 + 1)*50) + 150);
 		JPanel checklistPanel = new JPanel();
 		checklistPanel.setVisible(true);
-		checklistPanel.setBounds(0, 0, 500, 1100);
+		checklistPanel.setLayout(null);
+		checklistPanel.setBounds(0, 0, 750, ((list.size()/3 + 1)*50) + 150);
 		JCheckBox[] checkboxes = new JCheckBox[list.size()];
 		for (int i=0; i < list.size(); i++){
 			JCheckBox temp = new JCheckBox(list.get(i));
+			temp.setBounds(((i%3)*200)+100, ((i/3)*50)+20, 200, 50);
 	        checklistPanel.add(temp);
 	        checkboxes[i] = temp;
 		}
 		JButton btnSetDimensions = new JButton("Set Measures");
-		btnSetDimensions.setBounds(396, 244, 192, 29);
+		btnSetDimensions.setBounds(166, ((list.size()/3 + 1)*50)+30, 150, 30);
 		checklistPanel.add(btnSetDimensions);
 		btnSetDimensions.addActionListener(new ActionListener() {
 	         public void actionPerformed(ActionEvent e) {
@@ -361,6 +375,16 @@ public class GUI {
 	        	 System.out.println(userDimensions);
 	        	 System.out.println(userMeasures);
 	        	 graph.startSeeDB(userDimensions, userMeasures, query, dbsettings);
+	         }          
+	      });
+		JButton btnSelectAll = new JButton("Select All");
+		btnSelectAll.setBounds(400, ((list.size()/3 + 1)*50)+30, 150, 30);
+		checklistPanel.add(btnSelectAll);
+		btnSelectAll.addActionListener(new ActionListener() {
+	         public void actionPerformed(ActionEvent e) {
+	        	 for (int i=0; i < checkboxes.length; i++){
+	        		 checkboxes[i].setSelected(true);
+	        	 }
 	         }          
 	      });
 		mainPanel.add(checklistPanel);

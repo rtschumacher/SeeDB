@@ -23,7 +23,6 @@ import com.google.common.collect.Lists;
 
 import api.SeeDB;
 import common.InputQuery;
-import common.InputTablesMetadata;
 import common.QueryParser;
 import common.Utils;
 import db_wrappers.DBConnection;
