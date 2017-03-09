@@ -11,8 +11,12 @@ import java.util.List;
 import javax.swing.JOptionPane;
 
 import org.jfree.chart.ChartFactory;
+import org.jfree.chart.ChartMouseEvent;
+import org.jfree.chart.ChartMouseListener;
 import org.jfree.chart.ChartPanel; 
-import org.jfree.chart.JFreeChart; 
+import org.jfree.chart.JFreeChart;
+import org.jfree.chart.entity.CategoryItemEntity;
+import org.jfree.chart.entity.XYItemEntity;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.data.category.CategoryDataset; 
 import org.jfree.data.category.DefaultCategoryDataset; 
@@ -46,7 +50,26 @@ public class graph extends ApplicationFrame
          PlotOrientation.VERTICAL,           
          false, true, false);
          
-      ChartPanel chartPanel = new ChartPanel( barChart );        
+      ChartPanel chartPanel = new ChartPanel( barChart );
+      chartPanel.addChartMouseListener(new ChartMouseListener() {
+
+    	    public void chartMouseClicked(ChartMouseEvent e) {
+    	    	try {
+    	    		CategoryItemEntity entity = (CategoryItemEntity) e.getEntity();
+    	    		String category = entity.getCategory().toString();
+    	    		System.out.println(category);
+    	    	} catch (Exception e1) {
+    	    		
+    	    	}
+    	    }
+
+			@Override
+			public void chartMouseMoved(ChartMouseEvent arg0) {
+				// TODO Auto-generated method stub
+				
+			}
+
+    	});
       chartPanel.setPreferredSize(new java.awt.Dimension( 1800 , 1200 ) );        
       setContentPane( chartPanel ); 
    }
