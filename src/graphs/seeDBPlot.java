@@ -9,8 +9,11 @@ import org.jfree.chart.ChartMouseEvent;
 import org.jfree.chart.ChartMouseListener;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
+import org.jfree.chart.axis.CategoryAxis;
 import org.jfree.chart.entity.CategoryItemEntity;
+import org.jfree.chart.plot.CategoryPlot;
 import org.jfree.chart.plot.PlotOrientation;
+import org.jfree.chart.renderer.category.BarRenderer;
 import org.jfree.data.category.CategoryDataset;
 import org.jfree.data.category.DefaultCategoryDataset;
 import org.jfree.ui.ApplicationFrame;
@@ -33,6 +36,11 @@ public class seeDBPlot extends ApplicationFrame
 				true, true, false);
       
 		ChartPanel chartPanel = new ChartPanel( barChart );
+		CategoryPlot p = barChart.getCategoryPlot();
+		CategoryAxis a = p.getDomainAxis();
+		a.setCategoryMargin(0);
+		BarRenderer r = (BarRenderer) p.getRenderer();
+		r.setItemMargin(0);
 		chartPanel.addChartMouseListener(new ChartMouseListener() {
 
  	    public void chartMouseClicked(ChartMouseEvent e) {

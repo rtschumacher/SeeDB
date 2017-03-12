@@ -39,6 +39,8 @@ import views.View;
 
 public class graph extends ApplicationFrame
 {
+	
+	private int index = 0;
    public graph( String applicationTitle , String chartTitle , String[] columns, Double[] results,
 		   List<View> result, String where)
    {
@@ -52,6 +54,7 @@ public class graph extends ApplicationFrame
          false, true, false);
          
       ChartPanel chartPanel = new ChartPanel( barChart );
+      ArrayList<seeDBPlot> datasets = new ArrayList<seeDBPlot>();
       chartPanel.addChartMouseListener(new ChartMouseListener() {
 
     	    public void chartMouseClicked(ChartMouseEvent e) {
@@ -59,10 +62,11 @@ public class graph extends ApplicationFrame
     	    		CategoryItemEntity entity = (CategoryItemEntity) e.getEntity();
     	    		String category = entity.getCategory().toString();
     	    		String[] categories = category.split("__");
-    	    		seeDBPlot dataset = new seeDBPlot(category, categories[0], categories[1], result, where);
-    	    		dataset.pack( );        
-    	    	    RefineryUtilities.centerFrameOnScreen(dataset);
-    	    	    dataset.setVisible( true ); 
+    	    		datasets.add(index, new seeDBPlot(category, categories[0], categories[1], result, where));
+    	    		datasets.get(index).pack( );        
+    	    	    RefineryUtilities.centerFrameOnScreen(datasets.get(index));
+    	    	    datasets.get(index).setVisible( true ); 
+    	    	    index++;
     	    	} catch (Exception e1) {
     	    		
     	    	}
