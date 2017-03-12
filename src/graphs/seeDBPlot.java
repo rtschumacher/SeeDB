@@ -1,5 +1,9 @@
 package graphs;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartMouseEvent;
 import org.jfree.chart.ChartMouseListener;
@@ -12,19 +16,21 @@ import org.jfree.data.category.DefaultCategoryDataset;
 import org.jfree.ui.ApplicationFrame;
 
 import settings.DBSettings;
+import views.AggregateGroupByView;
+import views.View;
 
 public class seeDBPlot extends ApplicationFrame
 {
-	public seeDBPlot(String category , DBSettings connection)
+	public seeDBPlot(String category, String dimension, String measure, List<View> result, String where)
 	{
-		super( category );        
+		super( "Dataset Results" );        
 		JFreeChart barChart = ChartFactory.createBarChart(
-				category,           
+				dimension + " vs SUM(" + measure + ")",           
 				"Column",            
 				"Result",            
-				createDataset(),
+				createDataset(result, where, category),
 				PlotOrientation.VERTICAL,           
-				false, true, false);
+				true, true, false);
       
 		ChartPanel chartPanel = new ChartPanel( barChart );
 		chartPanel.addChartMouseListener(new ChartMouseListener() {
@@ -50,33 +56,33 @@ public class seeDBPlot extends ApplicationFrame
 		setContentPane( chartPanel ); 
 	}
 	
-	 private CategoryDataset createDataset( )
-	   {
-	      final String fiat = "FIAT";        
-	      final String audi = "AUDI";        
-	      final String ford = "FORD";        
-	      final String speed = "Speed";        
-	      final String millage = "Millage";        
-	      final String userrating = "User Rating";        
-	      final String safety = "safety";        
-	      final DefaultCategoryDataset dataset = 
-	      new DefaultCategoryDataset( );  
-
-	      dataset.addValue( 1.0 , fiat , speed );        
-	      dataset.addValue( 3.0 , fiat , userrating );        
-	      dataset.addValue( 5.0 , fiat , millage ); 
-	      dataset.addValue( 5.0 , fiat , safety );           
-
-	      dataset.addValue( 5.0 , audi , speed );        
-	      dataset.addValue( 6.0 , audi , userrating );       
-	      dataset.addValue( 10.0 , audi , millage );        
-	      dataset.addValue( 4.0 , audi , safety );
-
-	      dataset.addValue( 4.0 , ford , speed );        
-	      dataset.addValue( 2.0 , ford , userrating );        
-	      dataset.addValue( 3.0 , ford , millage );        
-	      dataset.addValue( 6.0 , ford , safety );               
-
-	      return dataset; 
+	 private CategoryDataset createDataset(List<View> result, String where, String category) {
+		 String inverseWhere = where.replaceAll("=", "!=");
+		 HashMap<String, ArrayList<Double>> values = new HashMap<String, ArrayList<Double>>();
+		 final DefaultCategoryDataset dataset = new DefaultCategoryDataset( );
+		 System.out.println(where);
+		 System.out.println(inverseWhere);
+		 
+		 for (int i=0; i < result.size(); i++){
+			 AggregateGroupByView temp = (AggregateGroupByView) result.get(i);
+			 String id = temp.getId();
+			 if (category.equals(id)){
+				 values = temp.getSum();
+				 break;
+			 }
+		 }
+		 
+		 for (String key : values.keySet()){
+			 System.out.println(key + values.get(key));
+			 for (int i = 0; i < 2; i++){
+				 if (i == 0){
+					 dataset.addValue(values.get(key).get(i), where, key);
+				 } else if (i == 1) {
+					 dataset.addValue(values.get(key).get(i), inverseWhere, key);
+				 }
+			 }
+		 }
+		 
+		 return dataset;
 	   }
 }

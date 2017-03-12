@@ -1,5 +1,6 @@
 package views;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -83,6 +84,21 @@ public class AggregateGroupByView extends AggregateView {
 			}
 		}
 		ret += "]]";
+		return ret;
+	}
+	
+	public HashMap<String, ArrayList<Double>> getSum(){
+		populateAvg();
+		HashMap<String, ArrayList<Double>> ret = new HashMap<String, ArrayList<Double>>();
+		for (String key: this.aggregateValues.keySet()) {
+			ArrayList<Double> temp = new ArrayList<Double>();
+			for (int i = 0; i < 2; i++) {
+				AggregateValues tmp = aggregateValues.get(key).datasetValues[i];
+				//System.out.println("Sum Normalised: " + tmp.sum);
+				temp.add(i, tmp.sumNormalized);
+			}
+			ret.put(key, temp);
+		}
 		return ret;
 	}
 	

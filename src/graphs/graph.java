@@ -40,7 +40,7 @@ import views.View;
 public class graph extends ApplicationFrame
 {
    public graph( String applicationTitle , String chartTitle , String[] columns, Double[] results,
-		   DBSettings dbsettings)
+		   List<View> result, String where)
    {
       super( applicationTitle );        
       JFreeChart barChart = ChartFactory.createBarChart(
@@ -59,14 +59,10 @@ public class graph extends ApplicationFrame
     	    		CategoryItemEntity entity = (CategoryItemEntity) e.getEntity();
     	    		String category = entity.getCategory().toString();
     	    		String[] categories = category.split("__");
-    	    		seeDBPlot category1 = new seeDBPlot(categories[0], dbsettings);
-    	    		category1.pack( );        
-    	    	    RefineryUtilities.centerFrameOnScreen(category1);
-    	    	    category1.setVisible( true ); 
-    	    		seeDBPlot category2 = new seeDBPlot(categories[1], dbsettings);
-    	    		category2.pack( );        
-    	    	    RefineryUtilities.centerFrameOnScreen(category2);
-    	    	    category2.setVisible( true ); 
+    	    		seeDBPlot dataset = new seeDBPlot(category, categories[0], categories[1], result, where);
+    	    		dataset.pack( );        
+    	    	    RefineryUtilities.centerFrameOnScreen(dataset);
+    	    	    dataset.setVisible( true ); 
     	    	} catch (Exception e1) {
     	    		
     	    	}
@@ -191,6 +187,7 @@ public class graph extends ApplicationFrame
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
+		String where = inputQueries[0].whereClause;
 		ResultSet rs = connection.getTableColumns(inputQueries[0].tables.get(0));
 		try {
 			while (rs.next()) {
@@ -224,7 +221,7 @@ public class graph extends ApplicationFrame
 	    for (int i = 0; i < result.size(); i++){
 	    	results[i] = (Double) result.get(i).getUtility(settings.distanceMetric, settings.normalizeDistributions);
 	    }
-		graph chart = new graph("SeeDB Results", "SeeDB Results", columns, results, dbsettings);
+		graph chart = new graph("SeeDB Results", "SeeDB Results", columns, results, result, where);
 	    chart.pack( );        
 	    RefineryUtilities.centerFrameOnScreen( chart );        
 	    chart.setVisible( true ); 
