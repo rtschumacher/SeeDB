@@ -8,6 +8,7 @@ import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
 import org.jfree.chart.ChartFactory;
@@ -37,7 +38,7 @@ import settings.ExperimentalSettings.DifferenceOperators;
 import views.AggregateGroupByView;
 import views.View; 
 
-public class graph extends ApplicationFrame
+public class graph extends JFrame
 {
 	
 	private int index = 0;

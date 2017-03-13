@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import javax.swing.JFrame;
+
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartMouseEvent;
 import org.jfree.chart.ChartMouseListener;
@@ -22,7 +24,7 @@ import settings.DBSettings;
 import views.AggregateGroupByView;
 import views.View;
 
-public class seeDBPlot extends ApplicationFrame
+public class seeDBPlot extends JFrame
 {
 	public seeDBPlot(String category, String dimension, String measure, List<View> result, String where)
 	{

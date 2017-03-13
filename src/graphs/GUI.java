@@ -46,7 +46,7 @@ public class GUI {
 			public void run() {
 				try {
 					GUI window = new GUI();
-					window.frame.setVisible(true);
+					//window.frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -58,7 +58,7 @@ public class GUI {
 	 * Create the application.
 	 */
 	public GUI() {
-		initializeMainGUI();
+		initializeConnection(0);
 	}
 
 	/**
@@ -72,6 +72,7 @@ public class GUI {
 		panel.setBackground(Color.WHITE);
 		panel.setBounds(0, 461, 1139, 194);
 		frame.getContentPane().add(panel);
+		frame.setVisible(true);
 		panel.setLayout(null);
 		
 		JScrollBar scrollBar = new JScrollBar();
@@ -193,12 +194,12 @@ public class GUI {
 		list_6.setBounds(119, 113, 185, 20);
 		panel_4.add(list_6);
 		
-		JButton btnAddDatabase = new JButton("Add Database");
+		JButton btnAddDatabase = new JButton("Edit Database");
 		btnAddDatabase.setBounds(370, 60, 161, 29);
 		panel_4.add(btnAddDatabase);
 		btnAddDatabase.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				initializeConnection();
+				initializeConnection(1);
 			}
 		});
 		
@@ -218,7 +219,7 @@ public class GUI {
 	      });
 	}
 	
-	private void initializeConnection() {
+	private void initializeConnection(int indicator) {
 		dbconnection = new JFrame("Database Connection");
 		dbconnection.setBounds(200, 100, 500, 400);
 		dbconnection.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -269,26 +270,40 @@ public class GUI {
 		hostAddress.add(textPassword);
 		
 		JButton btnAddDatabaseSettings = new JButton("Set Database");
-		btnAddDatabaseSettings.setBounds(175, 275, 150, 30);
+		btnAddDatabaseSettings.setBounds(75, 275, 150, 30);
 		hostAddress.add(btnAddDatabaseSettings);
 		btnAddDatabaseSettings.addActionListener(new ActionListener() {
 	         public void actionPerformed(ActionEvent e) {
 	        	connection = new DBConnection();
-	        	dbsettings = new DBSettings(textHost.getText(), textType.getText(),
+	        	DBSettings tempdbsettings = new DBSettings(textHost.getText(), textType.getText(),
 	        			textUsername.getText(), new String(textPassword.getPassword()));
 	     		if (!connection.hasConnection()) {
 	     			System.out.println("DB connection not specified, using default connection params");
 	     			// populate connection from settings
-	     			if (!connection.connectToDatabase(dbsettings)) {
+	     			if (!connection.connectToDatabase(tempdbsettings)) {
 	     				JOptionPane.showMessageDialog(dbconnection, "Cannot Connect to Database");
-	     				dbsettings = null;
 	     				//System.out.println("Cannot connect to DB with default settings");
 	     			} else {
+	     				dbsettings = tempdbsettings;
+	     				initializeMainGUI();
 	     				dbconnection.setVisible(false);
 	     			}
 	     		}
 	         }          
 	      });
+		
+		JButton btnCloseDatabaseSettings = new JButton("Close");
+		btnCloseDatabaseSettings.setBounds(275, 275, 150, 30);
+		hostAddress.add(btnCloseDatabaseSettings);
+		btnCloseDatabaseSettings.addActionListener(new ActionListener() {
+	         public void actionPerformed(ActionEvent e) {
+	        	 if (indicator == 0) {
+	        		 System.exit(0);
+	        	 } else if (indicator == 1){
+	        		 dbconnection.setVisible(false);
+	        	 }
+		     }          
+		});
 		mainPanel.add(hostAddress);
 		dbconnection.getContentPane().add(mainPanel);
         dbconnection.setVisible(true);
@@ -318,6 +333,7 @@ public class GUI {
 		checklistPanel.add(btnSetDimensions);
 		btnSetDimensions.addActionListener(new ActionListener() {
 	         public void actionPerformed(ActionEvent e) {
+	        	 userDimensions.clear();
 	        	 for (int i=0; i < list.size(); i++){
 	        		 if (checkboxes[i].isSelected()){
 	        			 userDimensions.add(list.get(i));
@@ -366,6 +382,7 @@ public class GUI {
 		checklistPanel.add(btnSetDimensions);
 		btnSetDimensions.addActionListener(new ActionListener() {
 	         public void actionPerformed(ActionEvent e) {
+	        	 userMeasures.clear();
 	        	 for (int i=0; i < list.size(); i++){
 	        		 if (checkboxes[i].isSelected()){
 	        			 userMeasures.add(list.get(i));
