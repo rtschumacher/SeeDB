@@ -97,13 +97,9 @@ public class graph extends JFrame
       return dataset; 
    }
    
-   public static List<String> getColumns(DBSettings dbsettings, String defaultQuery1){
+   public static List<String> getColumns(DBSettings dbsettings, String table){
 	    //String defaultQuery1 = "SELECT * FROM bank WHERE age=35 AND 1=0";
 		List<String> allColumns = new ArrayList<String>();
-		ExperimentalSettings settings = new ExperimentalSettings();
-		settings.differenceOperators = Lists.newArrayList();
-		settings.differenceOperators.add(DifferenceOperators.AGGREGATE);
-		settings.comparisonType = ComparisonType.ONE_DATASET_FULL;
 		DBConnection connection = new DBConnection();
 		if (!connection.hasConnection()) {
 			System.out.println("DB connection not specified, using default connection params");
@@ -113,14 +109,15 @@ public class graph extends JFrame
 				return null;
 			}
 		}
-		InputQuery[] inputQueries = new InputQuery[]{null, null};
-		try {
-			inputQueries[0] = QueryParser.parse(defaultQuery1);
-		} catch (Exception e1) {
+		//InputQuery[] inputQueries = new InputQuery[]{null, null};
+		//try {
+		//	inputQueries[0] = QueryParser.parse(defaultQuery1);
+		//} catch (Exception e1) {
 			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
-		ResultSet rs = connection.getTableColumns(inputQueries[0].tables.get(0));
+		//	e1.printStackTrace();
+		//}
+		//ResultSet rs = connection.getTableColumns(inputQueries[0].tables.get(0));
+		ResultSet rs = connection.getTableColumns(table);
 		try {
 			while (rs.next()) {
 			    String columnName = rs.getString("COLUMN_NAME");
@@ -140,10 +137,6 @@ public class graph extends JFrame
    public static List<String> getIntegerColumns(DBSettings dbsettings, String defaultQuery1){
 	    //String defaultQuery1 = "SELECT * FROM bank WHERE age=35 AND 1=0";
 		List<String> allColumns = new ArrayList<String>();
-		ExperimentalSettings settings = new ExperimentalSettings();
-		settings.differenceOperators = Lists.newArrayList();
-		settings.differenceOperators.add(DifferenceOperators.AGGREGATE);
-		settings.comparisonType = ComparisonType.ONE_DATASET_FULL;
 		DBConnection connection = new DBConnection();
 		if (!connection.hasConnection()) {
 			System.out.println("DB connection not specified, using default connection params");

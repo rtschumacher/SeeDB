@@ -195,6 +195,32 @@ public class DBConnection {
 		return rs;
 	}
 	
+	public List<String> getUniqueValues(String column, String table)
+	{
+		List<String> values = new ArrayList<String>();
+		Statement stmt = null;
+		ResultSet rs = null;
+		try {
+			// Get a statement from the connection
+		    stmt = connection.createStatement() ;
+
+		    // Execute the query
+		    rs = stmt.executeQuery("SELECT DISTINCT " + column + " FROM " + table + " ORDER BY " 
+		    		+ column + " ASC;") ;
+		    while (rs.next ()) {
+		    	values.add(rs.getString(column));
+			}
+			rs.close ();
+			stmt.close ();
+		}
+		catch(Exception e)
+		{
+			System.out.println("Error in executing query: " + e.getMessage());
+			e.printStackTrace();
+		}
+		return values;
+	}
+	
 	public List<String> getTables() {
 		List<String> tables = new ArrayList<String>();
 		DatabaseMetaData dbmd = null;

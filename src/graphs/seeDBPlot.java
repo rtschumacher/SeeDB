@@ -67,11 +67,8 @@ public class seeDBPlot extends JFrame
 	}
 	
 	 private CategoryDataset createDataset(List<View> result, String where, String category) {
-		 String inverseWhere = where.replaceAll("=", "!=");
 		 HashMap<String, ArrayList<Double>> values = new HashMap<String, ArrayList<Double>>();
 		 final DefaultCategoryDataset dataset = new DefaultCategoryDataset( );
-		 System.out.println(where);
-		 System.out.println(inverseWhere);
 		 
 		 for (int i=0; i < result.size(); i++){
 			 AggregateGroupByView temp = (AggregateGroupByView) result.get(i);
@@ -86,9 +83,9 @@ public class seeDBPlot extends JFrame
 			 System.out.println(key + values.get(key));
 			 for (int i = 0; i < 2; i++){
 				 if (i == 0){
-					 dataset.addValue(values.get(key).get(i), where, key);
+					 dataset.addValue(values.get(key).get(i), "Query Dataset (" + where + ")", key);
 				 } else if (i == 1) {
-					 dataset.addValue(values.get(key).get(i), inverseWhere, key);
+					 dataset.addValue(values.get(key).get(i), "Reference Dataset", key);
 				 }
 			 }
 		 }

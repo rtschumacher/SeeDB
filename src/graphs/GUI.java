@@ -37,6 +37,10 @@ public class GUI {
 	private List<String> userDimensions = new ArrayList<String>();
 	private List<String> tables = new ArrayList<String>();
 	private String query = null;
+	private String table = null;
+	private String column = null;
+	private String value = null;
+	private String operator = null;
 	
 
 	/**
@@ -149,17 +153,7 @@ public class GUI {
 		JComboBox list_3 = new JComboBox(tables.toArray());
 		list_3.setBounds(138, 51, 185, 20);
 		panel_3.add(list_3);
-		
-		JButton btnAddDataset = new JButton("Add Dataset");
-		btnAddDataset.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				query = (String) list_3.getSelectedItem();
-				System.out.println(query);
-			}
-		});
-		btnAddDataset.setBounds(366, 48, 161, 29);
-		panel_3.add(btnAddDataset);
-		
+			
 		JPanel panel_4 = new JPanel();
 		panel_4.setBounds(15, 91, 573, 137);
 		panel_3.add(panel_4);
@@ -174,7 +168,7 @@ public class GUI {
 		lblAttribute.setBounds(40, 41, 69, 20);
 		panel_4.add(lblAttribute);
 		
-		JList list_4 = new JList();
+		JComboBox<String> list_4 = new JComboBox<>();
 		list_4.setBounds(119, 41, 185, 20);
 		panel_4.add(list_4);
 		
@@ -183,7 +177,13 @@ public class GUI {
 		lblOperator.setBounds(40, 77, 69, 20);
 		panel_4.add(lblOperator);
 		
-		JList list_5 = new JList();
+		JComboBox<String> list_5 = new JComboBox<>();
+		list_5.addItem("=");
+		list_5.addItem("<>");
+		list_5.addItem(">");
+		list_5.addItem("<");
+		list_5.addItem(">=");
+		list_5.addItem("<=");
 		list_5.setBounds(119, 77, 185, 20);
 		panel_4.add(list_5);
 		
@@ -192,7 +192,7 @@ public class GUI {
 		lblValue.setBounds(40, 113, 69, 20);
 		panel_4.add(lblValue);
 		
-		JList list_6 = new JList();
+		JComboBox<String> list_6 = new JComboBox<>();
 		list_6.setBounds(119, 113, 185, 20);
 		panel_4.add(list_6);
 		
@@ -210,15 +210,42 @@ public class GUI {
 		panel_3.add(btnGetRecommendations);
 		btnGetRecommendations.addActionListener(new ActionListener() {
 	         public void actionPerformed(ActionEvent e) {
+	        	value = (String) list_6.getSelectedItem();
+		     	operator = (String) list_5.getSelectedItem();
+		     	query = "SELECT * FROM " + table + " WHERE " + column + operator + value;
+		     	System.out.println(query);
 	        	if (dbsettings == null) {
 	        		JOptionPane.showMessageDialog(frame, "Please Specify A Database");
 		     	} else if (query == null){
 		     		JOptionPane.showMessageDialog(frame, "Please Specify A Dataset");
 		     	} else {
-		     		initializeDimensions(graph.getColumns(dbsettings, query));
+		     		initializeDimensions(graph.getColumns(dbsettings, table));
 		     	}
 	         }
 	      });
+		
+		JButton btnAddDataset = new JButton("Add Dataset");
+		btnAddDataset.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				table = (String) list_3.getSelectedItem();
+				for (String temp : graph.getColumns(dbsettings, table)){
+					list_4.addItem(temp);
+				}
+				System.out.println(table);
+			}
+		});
+		
+		list_4.addActionListener(new ActionListener() {
+	         public void actionPerformed(ActionEvent e) {
+	        	column = (String) list_4.getSelectedItem();
+	        	list_6.removeAllItems();
+	        	for (String temp : connection.getUniqueValues(column, table)){
+					list_6.addItem(temp);
+				}
+	         }
+	      });
+		btnAddDataset.setBounds(366, 48, 161, 29);
+		panel_3.add(btnAddDataset);
 	}
 	
 	private void initializeConnection(int indicator) {
