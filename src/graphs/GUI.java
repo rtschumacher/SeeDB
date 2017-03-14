@@ -35,6 +35,7 @@ public class GUI {
 	private final JPanel panel_2 = new JPanel();
 	private List<String> userMeasures = new ArrayList<String>();
 	private List<String> userDimensions = new ArrayList<String>();
+	private List<String> tables = new ArrayList<String>();
 	private String query = null;
 	
 
@@ -144,14 +145,15 @@ public class GUI {
 		lblDataset.setBounds(59, 51, 69, 20);
 		panel_3.add(lblDataset);
 		
-		JTextField list_3 = new JTextField();
+		tables = connection.getTables();
+		JComboBox list_3 = new JComboBox(tables.toArray());
 		list_3.setBounds(138, 51, 185, 20);
 		panel_3.add(list_3);
 		
 		JButton btnAddDataset = new JButton("Add Dataset");
 		btnAddDataset.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				query = list_3.getText();
+				query = (String) list_3.getSelectedItem();
 				System.out.println(query);
 			}
 		});

@@ -153,14 +153,15 @@ public class graph extends JFrame
 				return null;
 			}
 		}
-		InputQuery[] inputQueries = new InputQuery[]{null, null};
-		try {
-			inputQueries[0] = QueryParser.parse(defaultQuery1);
-		} catch (Exception e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
-		allColumns = connection.getIntegerColumns(inputQueries[0].tables.get(0));
+		//InputQuery[] inputQueries = new InputQuery[]{null, null};
+		//try {
+		//	inputQueries[0] = QueryParser.parse(defaultQuery1);
+		//} catch (Exception e1) {
+		//	// TODO Auto-generated catch block
+		//	e1.printStackTrace();
+		//}
+		//allColumns = connection.getIntegerColumns(inputQueries[0].tables.get(0));
+		allColumns = connection.getIntegerColumns(defaultQuery1);
 		connection.close();
 		return allColumns;
   }

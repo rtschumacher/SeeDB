@@ -195,16 +195,39 @@ public class DBConnection {
 		return rs;
 	}
 	
-	public List<String> getIntegerColumns(String table) {
+	public List<String> getTables() {
+		List<String> tables = new ArrayList<String>();
+		DatabaseMetaData dbmd = null;
+		ResultSet rs = null;
+		try {
+			dbmd = connection.getMetaData();
+			
+			rs = dbmd.getTables(null, null, "%", null);
+			while (rs.next()) {
+				if (!(rs.getString("TABLE_TYPE") == null)){
+					if (rs.getString("TABLE_TYPE").equals("TABLE")){
+						tables.add(rs.getString("TABLE_NAME"));
+					}
+				}
+			}
+		} catch (SQLException e) {
+			System.out.println("Error in executing query");
+			e.printStackTrace();
+			return null;
+		}
+		return tables;
+	}
+	
+	public List<String> getIntegerColumns(String query) {
 		List<String> allColumns = new ArrayList<String>();
-		if (table == null) {
-			throw new NullPointerException("Table is null.");
+		if (query == null) {
+			throw new NullPointerException("Query is null.");
 		}
 		ResultSet rs = null;
 		Statement stmt = null;
 		try {
 			stmt = connection.createStatement() ;
-			rs = stmt.executeQuery("SELECT * FROM " + table);
+			rs = stmt.executeQuery(query);
 		} catch (SQLException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
