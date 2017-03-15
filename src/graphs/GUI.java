@@ -96,7 +96,7 @@ public class GUI {
 		
 		JLabel lblVisualisation = new JLabel("Visualisation");
 		panel_1.add(lblVisualisation);
-		panel_2.setBounds(0, 284, 603, 177);
+		panel_2.setBounds(0, 304, 603, 177);
 		frame.getContentPane().add(panel_2);
 		panel_2.setLayout(null);
 		
@@ -123,7 +123,7 @@ public class GUI {
 		panel_2.add(list_1);
 		
 		JButton btnBuildVisualisation = new JButton("Build Visualisation");
-		btnBuildVisualisation.setBounds(392, 75, 161, 29);
+		btnBuildVisualisation.setBounds(366, 75, 161, 29);
 		panel_2.add(btnBuildVisualisation);
 		
 		JLabel lblAgre = new JLabel("Aggregate");
@@ -136,12 +136,13 @@ public class GUI {
 		panel_2.add(list_2);
 		
 		JPanel panel_3 = new JPanel();
-		panel_3.setBounds(0, 0, 603, 285);
+		panel_3.setBounds(0, 0, 650, 285);
 		frame.getContentPane().add(panel_3);
 		panel_3.setLayout(null);
 		
-		JLabel lblQuery = new JLabel("Query");
-		lblQuery.setBounds(280, 5, 43, 20);
+		JLabel lblQuery = new JLabel("Database");
+		lblQuery.setFont(new Font("Tahoma", Font.PLAIN, 20));
+		lblQuery.setBounds(250, 5, 210, 40);
 		panel_3.add(lblQuery);
 		
 		JLabel lblDataset = new JLabel("Dataset");
@@ -155,26 +156,27 @@ public class GUI {
 		panel_3.add(list_3);
 			
 		JPanel panel_4 = new JPanel();
-		panel_4.setBounds(15, 91, 573, 137);
+		panel_4.setBounds(15, 90, 603, 200);
 		panel_3.add(panel_4);
 		panel_4.setLayout(null);
 		
-		JLabel lblFilter = new JLabel("Filter");
-		lblFilter.setBounds(269, 5, 35, 20);
+		JLabel lblFilter = new JLabel("Query");
+		lblFilter.setFont(new Font("Tahoma", Font.PLAIN, 20));
+		lblFilter.setBounds(250, 15, 210, 40);
 		panel_4.add(lblFilter);
 		
 		JLabel lblAttribute = new JLabel("Attribute");
 		lblAttribute.setFont(new Font("Tahoma", Font.PLAIN, 18));
-		lblAttribute.setBounds(40, 41, 69, 20);
+		lblAttribute.setBounds(44, 61, 69, 20);
 		panel_4.add(lblAttribute);
 		
 		JComboBox<String> list_4 = new JComboBox<>();
-		list_4.setBounds(119, 41, 185, 20);
+		list_4.setBounds(123, 61, 185, 20);
 		panel_4.add(list_4);
 		
 		JLabel lblOperator = new JLabel("Operator");
 		lblOperator.setFont(new Font("Tahoma", Font.PLAIN, 18));
-		lblOperator.setBounds(40, 77, 69, 20);
+		lblOperator.setBounds(44, 97, 69, 20);
 		panel_4.add(lblOperator);
 		
 		JComboBox<String> list_5 = new JComboBox<>();
@@ -184,30 +186,25 @@ public class GUI {
 		list_5.addItem("<");
 		list_5.addItem(">=");
 		list_5.addItem("<=");
-		list_5.setBounds(119, 77, 185, 20);
+		list_5.setBounds(123, 97, 185, 20);
 		panel_4.add(list_5);
 		
 		JLabel lblValue = new JLabel("Value");
 		lblValue.setFont(new Font("Tahoma", Font.PLAIN, 18));
-		lblValue.setBounds(40, 113, 69, 20);
+		lblValue.setBounds(44, 133, 69, 20);
 		panel_4.add(lblValue);
 		
 		JComboBox<String> list_6 = new JComboBox<>();
-		list_6.setBounds(119, 113, 185, 20);
+		list_6.setBounds(123, 133, 185, 20);
 		panel_4.add(list_6);
 		
-		JButton btnAddDatabase = new JButton("Edit Database");
-		btnAddDatabase.setBounds(370, 60, 161, 29);
-		panel_4.add(btnAddDatabase);
-		btnAddDatabase.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				initializeConnection(1);
-			}
-		});
-		
+		//JButton btnAddDatabase = new JButton("Edit Database");
+		//btnAddDatabase.setBounds(370, 60, 161, 29);
+		//panel_4.add(btnAddDatabase);
+				
 		JButton btnGetRecommendations = new JButton("Get Results");
-		btnGetRecommendations.setBounds(396, 244, 192, 29);
-		panel_3.add(btnGetRecommendations);
+		btnGetRecommendations.setBounds(351, 92, 161, 29);
+		panel_4.add(btnGetRecommendations);
 		btnGetRecommendations.addActionListener(new ActionListener() {
 	         public void actionPerformed(ActionEvent e) {
 	        	value = (String) list_6.getSelectedItem();
@@ -224,8 +221,16 @@ public class GUI {
 	         }
 	      });
 		
-		JButton btnAddDataset = new JButton("Add Dataset");
+		JButton btnAddDataset = new JButton("Edit Database");
+		btnAddDataset.setBounds(366, 48, 161, 29);
+		panel_3.add(btnAddDataset);
 		btnAddDataset.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				initializeConnection(1);
+			}
+		});
+		
+		list_3.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				table = (String) list_3.getSelectedItem();
 				for (String temp : graph.getColumns(dbsettings, table)){
@@ -234,6 +239,10 @@ public class GUI {
 				System.out.println(table);
 			}
 		});
+		
+		for(ActionListener a: list_3.getActionListeners()) {
+		    a.actionPerformed(new ActionEvent(this, ActionEvent.ACTION_PERFORMED, null));
+		}
 		
 		list_4.addActionListener(new ActionListener() {
 	         public void actionPerformed(ActionEvent e) {
@@ -244,14 +253,22 @@ public class GUI {
 				}
 	         }
 	      });
-		btnAddDataset.setBounds(366, 48, 161, 29);
-		panel_3.add(btnAddDataset);
+		
+		for(ActionListener a: list_3.getActionListeners()) {
+		    a.actionPerformed(new ActionEvent(this, ActionEvent.ACTION_PERFORMED, null));
+		}
+		
+		for(ActionListener a: list_4.getActionListeners()) {
+		    a.actionPerformed(new ActionEvent(this, ActionEvent.ACTION_PERFORMED, null));
+		}
 	}
 	
 	private void initializeConnection(int indicator) {
 		dbconnection = new JFrame("Database Connection");
 		dbconnection.setBounds(200, 100, 500, 400);
-		dbconnection.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		if (indicator == 0) {
+			dbconnection.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		}
 		dbconnection.getContentPane().setLayout(null);
 		JPanel mainPanel = new JPanel();
         mainPanel.setLayout(null);
@@ -275,7 +292,10 @@ public class GUI {
 		lblType.setBounds(50, 100, 200, 20);
 		hostAddress.add(lblType);
 		
-		JTextField textType = new JTextField();
+		JComboBox<String> textType = new JComboBox<String>();
+		textType.addItem("postgresql");
+		textType.addItem("vertica");
+		
 		textType.setBounds(200, 100, 200, 20);
 		hostAddress.add(textType);
 		      
@@ -304,7 +324,8 @@ public class GUI {
 		btnAddDatabaseSettings.addActionListener(new ActionListener() {
 	         public void actionPerformed(ActionEvent e) {
 	        	connection = new DBConnection();
-	        	DBSettings tempdbsettings = new DBSettings(textHost.getText(), textType.getText(),
+	        	DBSettings tempdbsettings = new DBSettings(textHost.getText(), 
+	        			(String) textType.getSelectedItem(),
 	        			textUsername.getText(), new String(textPassword.getPassword()));
 	     		if (!connection.hasConnection()) {
 	     			System.out.println("DB connection not specified, using default connection params");
@@ -341,7 +362,7 @@ public class GUI {
 	private void initializeDimensions(java.util.List<String> list) {
 		dimensions = new JFrame("Dimensions");
 		dimensions.setBounds(200, 100, 750, ((list.size()/3 + 1)*50) + 150);
-		dimensions.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		//dimensions.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		dimensions.getContentPane().setLayout(null);
 		JPanel mainPanel = new JPanel();
         mainPanel.setLayout(null);
@@ -390,7 +411,7 @@ public class GUI {
 	private void initializeMeasures(java.util.List<String> list) {
 		measures = new JFrame("Measures");
 		measures.setBounds(200, 100, 750, ((list.size()/3 + 1)*50) + 150);
-		measures.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		//measures.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		measures.getContentPane().setLayout(null);
 		JPanel mainPanel = new JPanel();
         mainPanel.setLayout(null);
