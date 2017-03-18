@@ -102,6 +102,36 @@ public class AggregateGroupByView extends AggregateView {
 		return ret;
 	}
 	
+	public HashMap<String, ArrayList<Double>> getAvg(){
+		populateAvg();
+		HashMap<String, ArrayList<Double>> ret = new HashMap<String, ArrayList<Double>>();
+		for (String key: this.aggregateValues.keySet()) {
+			ArrayList<Double> temp = new ArrayList<Double>();
+			for (int i = 0; i < 2; i++) {
+				AggregateValues tmp = aggregateValues.get(key).datasetValues[i];
+				//System.out.println("Sum Normalised: " + tmp.sum);
+				temp.add(i, tmp.averageNormalized);
+			}
+			ret.put(key, temp);
+		}
+		return ret;
+	}
+	
+	public HashMap<String, ArrayList<Double>> getCount(){
+		populateAvg();
+		HashMap<String, ArrayList<Double>> ret = new HashMap<String, ArrayList<Double>>();
+		for (String key: this.aggregateValues.keySet()) {
+			ArrayList<Double> temp = new ArrayList<Double>();
+			for (int i = 0; i < 2; i++) {
+				AggregateValues tmp = aggregateValues.get(key).datasetValues[i];
+				//System.out.println("Sum Normalised: " + tmp.sum);
+				temp.add(i, tmp.countNormalized);
+			}
+			ret.put(key, temp);
+		}
+		return ret;
+	}	
+	
 	private AggregateFunctions getAggregateFunctionForUtility() {
 		if (func == AggregateFunctions.ALL) return AggregateFunctions.ALL;
 		return func;
@@ -220,5 +250,15 @@ public class AggregateGroupByView extends AggregateView {
 	
 	public AggregateFunctions getFunction() {
 		return func;
+	}
+	
+	public void setFunction(String function) {
+		if (function.equals("AVG")){
+			func = AggregateFunctions.AVG;
+		} else if (function.equals("COUNT")){
+			func = AggregateFunctions.COUNT;
+		} else if (function.equals("SUM")){
+			func = AggregateFunctions.SUM;
+		}
 	}
 }

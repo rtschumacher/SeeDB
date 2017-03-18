@@ -26,14 +26,15 @@ import views.View;
 
 public class seeDBPlot extends JFrame
 {
-	public seeDBPlot(String category, String dimension, String measure, List<View> result, String where)
+	public seeDBPlot(String category, String dimension, String measure, List<View> result, 
+			String where, String aggregate)
 	{
 		super( "Dataset Results" );        
 		JFreeChart barChart = ChartFactory.createBarChart(
-				dimension + " vs SUM(" + measure + ")",           
+				dimension + " vs " + aggregate + "(" + measure + ")",           
 				"Column",            
 				"Result",            
-				createDataset(result, where, category),
+				createDataset(result, where, category, aggregate),
 				PlotOrientation.VERTICAL,           
 				true, true, false);
       
@@ -66,7 +67,7 @@ public class seeDBPlot extends JFrame
 		setContentPane( chartPanel ); 
 	}
 	
-	 private CategoryDataset createDataset(List<View> result, String where, String category) {
+	 private CategoryDataset createDataset(List<View> result, String where, String category, String aggregate) {
 		 HashMap<String, ArrayList<Double>> values = new HashMap<String, ArrayList<Double>>();
 		 final DefaultCategoryDataset dataset = new DefaultCategoryDataset( );
 		 
@@ -74,7 +75,13 @@ public class seeDBPlot extends JFrame
 			 AggregateGroupByView temp = (AggregateGroupByView) result.get(i);
 			 String id = temp.getId();
 			 if (category.equals(id)){
-				 values = temp.getSum();
+				 if (aggregate.equals("SUM")){
+					 values = temp.getSum();
+				 } else if (aggregate.equals("COUNT")){
+					 values = temp.getCount();
+				 } else if (aggregate.equals("AVG")){
+					 values = temp.getAvg();
+				 }
 				 break;
 			 }
 		 }

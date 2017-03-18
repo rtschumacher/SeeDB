@@ -314,7 +314,7 @@ public class SeeDB {
 	 * registered with the system
 	 * @return List of serialized difference results
 	 */
-	public List<View> computeDifference(List<String> dimensions, List<String> measures) {
+	public List<View> computeDifference(List<String> dimensions, List<String> measures, String aggregrate) {
 		// get the table metadata and identify the attributes that we want to analyze
 		InputTablesMetadata[] queryMetadatas = this.getMetadata(inputQueries[0].tables,
 				inputQueries[1].tables, this.numQueries, dimensions, measures);
@@ -405,6 +405,7 @@ public class SeeDB {
 		//System.out.println(views.get(0));
 		List<View> ret = views; //.subList(0, 10);
 		for (int i = 0; i < ret.size(); i++) {
+			((AggregateGroupByView) ret.get(i)).setFunction(aggregrate);
 			System.out.println(((AggregateGroupByView) ret.get(i)).getId() + " " + ret.get(i).getUtility(settings.distanceMetric, settings.normalizeDistributions));
 			// username = in.nextLine(); 
 		}

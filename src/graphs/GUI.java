@@ -41,6 +41,7 @@ public class GUI {
 	private String column = null;
 	private String value = null;
 	private String operator = null;
+	private String aggregrate = null;
 	
 
 	/**
@@ -96,44 +97,40 @@ public class GUI {
 		
 		JLabel lblVisualisation = new JLabel("Visualisation");
 		panel_1.add(lblVisualisation);
-		panel_2.setBounds(0, 304, 603, 177);
+		panel_2.setBounds(0, 280, 603, 177);
 		frame.getContentPane().add(panel_2);
 		panel_2.setLayout(null);
 		
-		JLabel lblVisualisationBuilder = new JLabel("Visualisation Builder");
-		lblVisualisationBuilder.setBounds(230, 5, 142, 20);
+		JLabel lblVisualisationBuilder = new JLabel("Aggregrate Function");
+		lblVisualisationBuilder.setFont(new Font("Tahoma", Font.PLAIN, 20));
+		lblVisualisationBuilder.setBounds(100, 0, 250, 30);
 		panel_2.add(lblVisualisationBuilder);
 		
-		JLabel lblXAxis = new JLabel("X Axis");
-		lblXAxis.setFont(new Font("Tahoma", Font.PLAIN, 18));
-		lblXAxis.setBounds(82, 41, 69, 20);
-		panel_2.add(lblXAxis);
+		JRadioButton sum = new JRadioButton("Sum");
+		sum.setFont(new Font("Tahoma", Font.PLAIN, 18));
+		sum.setBounds(150, 50, 185, 20);
+		panel_2.add(sum);
 		
-		JList list = new JList();
-		list.setBounds(161, 41, 185, 20);
-		panel_2.add(list);
-		
-		JLabel lblYAxis = new JLabel("Y Axis");
-		lblYAxis.setFont(new Font("Tahoma", Font.PLAIN, 18));
-		lblYAxis.setBounds(82, 81, 69, 20);
-		panel_2.add(lblYAxis);
-		
-		JList list_1 = new JList();
-		list_1.setBounds(161, 81, 185, 20);
-		panel_2.add(list_1);
+		JRadioButton count = new JRadioButton("Count");
+		count.setBounds(150, 90, 185, 20);
+		count.setFont(new Font("Tahoma", Font.PLAIN, 18));
+		panel_2.add(count);
 		
 		JButton btnBuildVisualisation = new JButton("Build Visualisation");
 		btnBuildVisualisation.setBounds(366, 75, 161, 29);
 		panel_2.add(btnBuildVisualisation);
 		
-		JLabel lblAgre = new JLabel("Aggregate");
-		lblAgre.setFont(new Font("Tahoma", Font.PLAIN, 18));
-		lblAgre.setBounds(58, 121, 93, 20);
-		panel_2.add(lblAgre);
+		JRadioButton avg = new JRadioButton("Average");
+		avg.setBounds(150, 130, 185, 20);
+		avg.setFont(new Font("Tahoma", Font.PLAIN, 18));
+		panel_2.add(avg);
 		
-		JList list_2 = new JList();
-		list_2.setBounds(161, 121, 185, 20);
-		panel_2.add(list_2);
+		ButtonGroup group = new ButtonGroup();
+	    group.add(avg);
+	    group.add(sum);
+	    group.add(count);
+	    
+	    sum.setSelected(true);
 		
 		JPanel panel_3 = new JPanel();
 		panel_3.setBounds(0, 0, 650, 285);
@@ -152,7 +149,8 @@ public class GUI {
 		
 		tables = connection.getTables();
 		JComboBox list_3 = new JComboBox(tables.toArray());
-		list_3.setBounds(138, 51, 185, 20);
+		list_3.setFont(new Font("Tahoma", Font.PLAIN, 18));
+		list_3.setBounds(138, 47, 185, 30);
 		panel_3.add(list_3);
 			
 		JPanel panel_4 = new JPanel();
@@ -167,40 +165,39 @@ public class GUI {
 		
 		JLabel lblAttribute = new JLabel("Attribute");
 		lblAttribute.setFont(new Font("Tahoma", Font.PLAIN, 18));
-		lblAttribute.setBounds(44, 61, 69, 20);
+		lblAttribute.setBounds(44, 61, 69, 30);
 		panel_4.add(lblAttribute);
 		
 		JComboBox<String> list_4 = new JComboBox<>();
-		list_4.setBounds(123, 61, 185, 20);
+		list_4.setBounds(123, 61, 185, 30);
+		list_4.setFont(new Font("Tahoma", Font.PLAIN, 18));
 		panel_4.add(list_4);
 		
 		JLabel lblOperator = new JLabel("Operator");
 		lblOperator.setFont(new Font("Tahoma", Font.PLAIN, 18));
-		lblOperator.setBounds(44, 97, 69, 20);
+		lblOperator.setBounds(44, 97, 69, 30);
 		panel_4.add(lblOperator);
 		
 		JComboBox<String> list_5 = new JComboBox<>();
+		list_5.setFont(new Font("Tahoma", Font.PLAIN, 18));
 		list_5.addItem("=");
 		list_5.addItem("<>");
 		list_5.addItem(">");
 		list_5.addItem("<");
 		list_5.addItem(">=");
 		list_5.addItem("<=");
-		list_5.setBounds(123, 97, 185, 20);
+		list_5.setBounds(123, 97, 185, 30);
 		panel_4.add(list_5);
 		
 		JLabel lblValue = new JLabel("Value");
 		lblValue.setFont(new Font("Tahoma", Font.PLAIN, 18));
-		lblValue.setBounds(44, 133, 69, 20);
+		lblValue.setBounds(44, 133, 69, 30);
 		panel_4.add(lblValue);
 		
 		JComboBox<String> list_6 = new JComboBox<>();
-		list_6.setBounds(123, 133, 185, 20);
+		list_6.setFont(new Font("Tahoma", Font.PLAIN, 18));
+		list_6.setBounds(123, 133, 185, 30);
 		panel_4.add(list_6);
-		
-		//JButton btnAddDatabase = new JButton("Edit Database");
-		//btnAddDatabase.setBounds(370, 60, 161, 29);
-		//panel_4.add(btnAddDatabase);
 				
 		JButton btnGetRecommendations = new JButton("Get Results");
 		btnGetRecommendations.setBounds(351, 92, 161, 29);
@@ -210,7 +207,14 @@ public class GUI {
 	        	value = (String) list_6.getSelectedItem();
 		     	operator = (String) list_5.getSelectedItem();
 		     	query = "SELECT * FROM " + table + " WHERE " + column + operator + value;
-		     	System.out.println(query);
+		     	if (sum.isSelected()){
+		     		aggregrate = "SUM";
+		     	} else if (avg.isSelected()){
+		     		aggregrate = "AVG";
+		     	} else if (count.isSelected()){
+		     		aggregrate = "COUNT";
+		     	}
+		     	System.out.println(aggregrate);
 	        	if (dbsettings == null) {
 	        		JOptionPane.showMessageDialog(frame, "Please Specify A Database");
 		     	} else if (query == null){
@@ -232,6 +236,7 @@ public class GUI {
 		
 		list_3.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
+				list_4.removeAllItems();
 				table = (String) list_3.getSelectedItem();
 				for (String temp : graph.getColumns(dbsettings, table)){
 					list_4.addItem(temp);
@@ -284,7 +289,8 @@ public class GUI {
 		hostAddress.add(lblHost);
 		
 		JTextField textHost = new JTextField();
-		textHost.setBounds(200, 50, 200, 20);
+		textHost.setBounds(200, 45, 200, 30);
+		textHost.setFont(new Font("Tahoma", Font.PLAIN, 18));
 		hostAddress.add(textHost);
 		     
         JLabel lblType = new JLabel("Database Type");
@@ -294,9 +300,9 @@ public class GUI {
 		
 		JComboBox<String> textType = new JComboBox<String>();
 		textType.addItem("postgresql");
+		textType.setFont(new Font("Tahoma", Font.PLAIN, 18));
 		textType.addItem("vertica");
-		
-		textType.setBounds(200, 100, 200, 20);
+		textType.setBounds(200, 95, 200, 30);
 		hostAddress.add(textType);
 		      
         JLabel lblUsername = new JLabel("Username");
@@ -305,7 +311,8 @@ public class GUI {
 		hostAddress.add(lblUsername);
 		
 		JTextField textUsername = new JTextField();
-		textUsername.setBounds(200, 150, 200, 20);
+		textUsername.setBounds(200, 145, 200, 30);
+		textUsername.setFont(new Font("Tahoma", Font.PLAIN, 18));
 		hostAddress.add(textUsername);
         
         JLabel lblPassword = new JLabel("Password");
@@ -315,7 +322,8 @@ public class GUI {
 		
 		JPasswordField textPassword = new JPasswordField();
 		textPassword.setEchoChar('*');
-		textPassword.setBounds(200, 200, 200, 20);
+		textPassword.setFont(new Font("Tahoma", Font.PLAIN, 18));
+		textPassword.setBounds(200, 195, 200, 30);
 		hostAddress.add(textPassword);
 		
 		JButton btnAddDatabaseSettings = new JButton("Set Database");
@@ -375,6 +383,7 @@ public class GUI {
 		for (int i=0; i < list.size(); i++){
 			JCheckBox temp = new JCheckBox(list.get(i));
 			temp.setBounds(((i%3)*200)+100, ((i/3)*50)+20, 200, 50);
+			temp.setFont(new Font("Tahoma", Font.PLAIN, 18));
 	        checklistPanel.add(temp);
 	        checkboxes[i] = temp;
 		}
@@ -424,6 +433,7 @@ public class GUI {
 		for (int i=0; i < list.size(); i++){
 			JCheckBox temp = new JCheckBox(list.get(i));
 			temp.setBounds(((i%3)*200)+100, ((i/3)*50)+20, 200, 50);
+			temp.setFont(new Font("Tahoma", Font.PLAIN, 18));
 	        checklistPanel.add(temp);
 	        checkboxes[i] = temp;
 		}
@@ -441,7 +451,7 @@ public class GUI {
 	        	 measures.setVisible(false);
 	        	 System.out.println(userDimensions);
 	        	 System.out.println(userMeasures);
-	        	 graph.startSeeDB(userDimensions, userMeasures, query, dbsettings);
+	        	 graph.startSeeDB(userDimensions, userMeasures, query, dbsettings, aggregrate);
 	         }          
 	      });
 		JButton btnSelectAll = new JButton("Select All");

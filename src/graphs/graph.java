@@ -6,6 +6,8 @@ import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Types;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import javax.swing.JFrame;
@@ -43,7 +45,7 @@ public class graph extends JFrame
 	
 	private int index = 0;
    public graph( String applicationTitle , String chartTitle , String[] columns, Double[] results,
-		   List<View> result, String where)
+		   List<View> result, String where, String aggregrate)
    {
       super( applicationTitle );        
       JFreeChart barChart = ChartFactory.createBarChart(
@@ -63,7 +65,7 @@ public class graph extends JFrame
     	    		CategoryItemEntity entity = (CategoryItemEntity) e.getEntity();
     	    		String category = entity.getCategory().toString();
     	    		String[] categories = category.split("__");
-    	    		datasets.add(index, new seeDBPlot(category, categories[0], categories[1], result, where));
+    	    		datasets.add(index, new seeDBPlot(category, categories[0], categories[1], result, where, aggregrate));
     	    		datasets.get(index).pack( );        
     	    	    RefineryUtilities.centerFrameOnScreen(datasets.get(index));
     	    	    datasets.get(index).setVisible( true ); 
@@ -88,7 +90,7 @@ public class graph extends JFrame
    {
       
       final DefaultCategoryDataset dataset = 
-      new DefaultCategoryDataset( );  
+      new DefaultCategoryDataset( ); 
 
       for (int i=0; i<results.length; i++){
     	  dataset.addValue( results[i] , "" , columns[i]);
@@ -160,7 +162,7 @@ public class graph extends JFrame
   }
    
    public static void startSeeDB(List<String> dimensions, List<String> measures, String query,
-		   DBSettings dbsettings)
+		   DBSettings dbsettings, String aggregrate)
    {	
 	    //String defaultQuery1 = "SELECT * FROM bank WHERE age=35"
 	   	String defaultQuery1 = query;
@@ -202,7 +204,7 @@ public class graph extends JFrame
 			System.out.println("Inside 4-1");
 			seedb.initialize(defaultQuery1, null, settings);
 			System.out.println("Inside 4-2");
-			result = seedb.computeDifference(dimensions, measures);
+			result = seedb.computeDifference(dimensions, measures, aggregrate);
 			System.out.println("Inside 4-3");
 			Utils.printList(result);
 			System.out.println("Inside 4-4");
@@ -212,15 +214,20 @@ public class graph extends JFrame
 		}
 	    String[] columns = new String[result.size()];
 	    Double[] results = new Double[result.size()];
+	    Collections.sort(result, new Comparator<View>(){
+	        public int compare(View s1, View s2) {
+	            return Double.compare(s1.getUtility(settings.distanceMetric, settings.normalizeDistributions),
+	            		s2.getUtility(settings.distanceMetric, settings.normalizeDistributions));
+	        }
+	    });
+	    Collections.reverse(result);
 	    for (int i = 0; i < result.size(); i++){
 	    	columns[i] = (String) ((AggregateGroupByView) result.get(i)).getId();
-	    	columns[i] = columns[i].replaceAll("dim_", "");
-	    	columns[i] = columns[i].replaceAll("measure_", "");
 	    }
 	    for (int i = 0; i < result.size(); i++){
 	    	results[i] = (Double) result.get(i).getUtility(settings.distanceMetric, settings.normalizeDistributions);
 	    }
-		graph chart = new graph("SeeDB Results", "SeeDB Results", columns, results, result, where);
+		graph chart = new graph("SeeDB Results", "SeeDB Results", columns, results, result, where, aggregrate);
 	    chart.pack( );        
 	    RefineryUtilities.centerFrameOnScreen( chart );        
 	    chart.setVisible( true ); 
