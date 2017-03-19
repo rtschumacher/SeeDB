@@ -364,13 +364,7 @@ public class SeeDB {
 		}
 		
 		for (View view : views){
-			AggregateGroupByView temp = null;
-			try {
-				temp = (AggregateGroupByView) ((AggregateGroupByView) view).clone();
-			} catch (CloneNotSupportedException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			}
+			AggregateGroupByView temp = (AggregateGroupByView) view;
 			if (binnedDimensions.contains(temp.groupByAttribute)){
 				Set<String> keyset = temp.aggregateValues.keySet();
 				List<Double> keysetValues = new ArrayList<Double>();
@@ -389,7 +383,6 @@ public class SeeDB {
 				List<AggregateGroupByView> tempBinList = new ArrayList<AggregateGroupByView>();
 				for (int i=0; i < 10; i++){
 					tempBinList.add(i, new AggregateGroupByView(temp.groupByAttribute, temp.aggregateAttribute));
-					tempBinList.get(i).aggregateValues = (HashMap<String, AggregateValuesWrapper>) temp.aggregateValues.clone();
 				}
 				for (String key : keyset){
 					double j = Double.parseDouble(key);
@@ -398,11 +391,7 @@ public class SeeDB {
 					if (k >= 10) {
 						k = 9;
 					}
-					for (int i = 0; i < 10; i++){
-						if (i != k) {
-							tempBinList.get(i).aggregateValues.remove(key);
-						}
-					}
+					tempBinList.get(k).aggregateValues.put(key, new AggregateValuesWrapper());
 				}
 				binnedViews.add(tempBinList);
 				System.out.println(highest + " " + lowest);
