@@ -162,7 +162,7 @@ public class graph extends JFrame
   }
    
    public static void startSeeDB(List<String> dimensions, List<String> measures, String query,
-		   DBSettings dbsettings, String aggregrate)
+		   DBSettings dbsettings, String aggregrate, List<String> binnedDimensions)
    {	
 	    //String defaultQuery1 = "SELECT * FROM bank WHERE age=35"
 	   	String defaultQuery1 = query;
@@ -204,7 +204,7 @@ public class graph extends JFrame
 			System.out.println("Inside 4-1");
 			seedb.initialize(defaultQuery1, null, settings);
 			System.out.println("Inside 4-2");
-			result = seedb.computeDifference(dimensions, measures, aggregrate);
+			result = seedb.computeDifference(dimensions, measures, aggregrate, binnedDimensions);
 			System.out.println("Inside 4-3");
 			Utils.printList(result);
 			System.out.println("Inside 4-4");

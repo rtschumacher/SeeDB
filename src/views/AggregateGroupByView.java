@@ -14,7 +14,7 @@ import utils.UtilityMetrics;
 import views.AggregateValuesWrapper.AggregateValues;
 import common.DifferenceQuery;
 
-public class AggregateGroupByView extends AggregateView {
+public class AggregateGroupByView extends AggregateView implements Cloneable {
 
 	private boolean populatedAvg = false;
 	private AggregateFunctions func = AggregateFunctions.ALL;
@@ -250,6 +250,11 @@ public class AggregateGroupByView extends AggregateView {
 	
 	public AggregateFunctions getFunction() {
 		return func;
+	}
+	
+	@Override
+	public Object clone() throws CloneNotSupportedException {
+		return super.clone();
 	}
 	
 	public void setFunction(String function) {

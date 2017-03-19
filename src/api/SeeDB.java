@@ -3,11 +3,13 @@ package api;
 import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Scanner;
+import java.util.Set;
 
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel; 
@@ -314,7 +316,8 @@ public class SeeDB {
 	 * registered with the system
 	 * @return List of serialized difference results
 	 */
-	public List<View> computeDifference(List<String> dimensions, List<String> measures, String aggregrate) {
+	public List<View> computeDifference(List<String> dimensions, List<String> measures, 
+			String aggregrate, List<String> binnedDimensions) {
 		// get the table metadata and identify the attributes that we want to analyze
 		InputTablesMetadata[] queryMetadatas = this.getMetadata(inputQueries[0].tables,
 				inputQueries[1].tables, this.numQueries, dimensions, measures);
@@ -349,6 +352,7 @@ public class SeeDB {
 		//System.out.println(optimizedQueries.size());
 		
 		List<View> views = null;
+		List<List<AggregateGroupByView>> binnedViews = new ArrayList<List<AggregateGroupByView>>();
 		QueryExecutor qe = new QueryExecutor(pool, settings, logFile);
 		try {
 			//System.out.println("queries " + queries);
@@ -357,6 +361,52 @@ public class SeeDB {
 		} catch (SQLException e) {
 			e.printStackTrace();
 			return null;
+		}
+		
+		for (View view : views){
+			AggregateGroupByView temp = null;
+			try {
+				temp = (AggregateGroupByView) ((AggregateGroupByView) view).clone();
+			} catch (CloneNotSupportedException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+			if (binnedDimensions.contains(temp.groupByAttribute)){
+				Set<String> keyset = temp.aggregateValues.keySet();
+				List<Double> keysetValues = new ArrayList<Double>();
+				for (String key : keyset){
+					keysetValues.add(Double.parseDouble(key));
+				}
+				double highest = Collections.max(keysetValues);
+				double lowest = Collections.min(keysetValues);
+				double binValue = (highest-lowest)/10;
+				double bumper = 0;
+				if (lowest < 0) {
+					bumper = 0-lowest;
+					lowest += bumper;
+					highest += bumper;
+				}
+				List<AggregateGroupByView> tempBinList = new ArrayList<AggregateGroupByView>();
+				for (int i=0; i < 10; i++){
+					tempBinList.add(i, new AggregateGroupByView(temp.groupByAttribute, temp.aggregateAttribute));
+					tempBinList.get(i).aggregateValues = (HashMap<String, AggregateValuesWrapper>) temp.aggregateValues.clone();
+				}
+				for (String key : keyset){
+					double j = Double.parseDouble(key);
+					j += bumper;
+					int k = (int) (j / binValue);
+					if (k >= 10) {
+						k = 9;
+					}
+					for (int i = 0; i < 10; i++){
+						if (i != k) {
+							tempBinList.get(i).aggregateValues.remove(key);
+						}
+					}
+				}
+				binnedViews.add(tempBinList);
+				System.out.println(highest + " " + lowest);
+			}
 		}
 		
 		if (settings.useParallelExecution) {

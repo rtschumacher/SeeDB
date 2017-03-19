@@ -451,7 +451,11 @@ public class GUI {
 	        	 measures.setVisible(false);
 	        	 System.out.println(userDimensions);
 	        	 System.out.println(userMeasures);
-	        	 graph.startSeeDB(userDimensions, userMeasures, query, dbsettings, aggregrate);
+	        	 List<String> binnedDimensions = new ArrayList<String>(userDimensions);
+	        	 binnedDimensions.retainAll(list);
+	        	 System.out.println(binnedDimensions);
+	        	 graph.startSeeDB(userDimensions, userMeasures, query, dbsettings, aggregrate,
+	        			 binnedDimensions);
 	         }          
 	      });
 		JButton btnSelectAll = new JButton("Select All");
