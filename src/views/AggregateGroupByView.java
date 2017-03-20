@@ -87,7 +87,10 @@ public class AggregateGroupByView extends AggregateView implements Cloneable {
 		return ret;
 	}
 	
-	public HashMap<String, ArrayList<Double>> getSum(){
+	public HashMap<String, ArrayList<Double>> getSum(boolean normalise){
+		if (normalise){
+			normalize();
+		}
 		populateAvg();
 		HashMap<String, ArrayList<Double>> ret = new HashMap<String, ArrayList<Double>>();
 		for (String key: this.aggregateValues.keySet()) {

@@ -31,6 +31,7 @@ import settings.ExperimentalSettings.DistanceMetric;
 import views.AggregateGroupByView;
 import views.AggregateValuesWrapper;
 import views.AggregateView;
+import views.BinnedView;
 import views.View;
 
 import com.google.common.collect.Lists;
@@ -317,7 +318,7 @@ public class SeeDB {
 	 * @return List of serialized difference results
 	 */
 	public List<View> computeDifference(List<String> dimensions, List<String> measures, 
-			String aggregrate, List<String> binnedDimensions) {
+			String aggregate, List<String> binnedDimensions) {
 		// get the table metadata and identify the attributes that we want to analyze
 		InputTablesMetadata[] queryMetadatas = this.getMetadata(inputQueries[0].tables,
 				inputQueries[1].tables, this.numQueries, dimensions, measures);
@@ -353,6 +354,7 @@ public class SeeDB {
 		
 		List<View> views = null;
 		List<List<AggregateGroupByView>> binnedViews = new ArrayList<List<AggregateGroupByView>>();
+		List<BinnedView> binnedObjects = new ArrayList<BinnedView>();
 		QueryExecutor qe = new QueryExecutor(pool, settings, logFile);
 		try {
 			//System.out.println("queries " + queries);
@@ -391,11 +393,15 @@ public class SeeDB {
 					if (k >= 10) {
 						k = 9;
 					}
-					tempBinList.get(k).aggregateValues.put(key, new AggregateValuesWrapper());
+					tempBinList.get(k).aggregateValues.put(key, temp.aggregateValues.get(key));
 				}
 				binnedViews.add(tempBinList);
 				System.out.println(highest + " " + lowest);
 			}
+		}
+		
+		for (List<AggregateGroupByView> binnedTemp : binnedViews){
+			binnedObjects.add(new BinnedView(binnedTemp, aggregate));
 		}
 		
 		if (settings.useParallelExecution) {
@@ -444,7 +450,7 @@ public class SeeDB {
 		//System.out.println(views.get(0));
 		List<View> ret = views; //.subList(0, 10);
 		for (int i = 0; i < ret.size(); i++) {
-			((AggregateGroupByView) ret.get(i)).setFunction(aggregrate);
+			((AggregateGroupByView) ret.get(i)).setFunction(aggregate);
 			System.out.println(((AggregateGroupByView) ret.get(i)).getId() + " " + ret.get(i).getUtility(settings.distanceMetric, settings.normalizeDistributions));
 			// username = in.nextLine(); 
 		}
