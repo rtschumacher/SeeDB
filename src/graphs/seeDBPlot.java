@@ -1,6 +1,8 @@
 package graphs;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 
@@ -86,7 +88,23 @@ public class seeDBPlot extends JFrame
 			 }
 		 }
 		 
+		 List<String> sort = new ArrayList();
+		 
 		 for (String key : values.keySet()){
+			 sort.add(key);
+		 }
+		 
+		 Collections.sort(sort, new Comparator<String>() {
+		     public int compare(String str1, String str2){
+		    	 String[] str1Parts = str1.split(" ");
+		    	 String[] str2Parts = str2.split(" ");
+		    	 Double db1 = Double.parseDouble(str1Parts[0]);
+		    	 Double db2 = Double.parseDouble(str2Parts[0]);
+		         return db1.compareTo(db2);
+		     }
+		 });
+		 
+		 for (String key : sort){
 			 System.out.println(key + values.get(key));
 			 for (int i = 0; i < 2; i++){
 				 if (i == 0){

@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Scanner;
 import java.util.Set;
@@ -354,7 +355,7 @@ public class SeeDB {
 		
 		List<View> views = null;
 		List<List<AggregateGroupByView>> binnedViews = new ArrayList<List<AggregateGroupByView>>();
-		List<BinnedView> binnedObjects = new ArrayList<BinnedView>();
+		List<View> binnedCompleted = new ArrayList<View>();
 		QueryExecutor qe = new QueryExecutor(pool, settings, logFile);
 		try {
 			//System.out.println("queries " + queries);
@@ -373,9 +374,9 @@ public class SeeDB {
 				for (String key : keyset){
 					keysetValues.add(Double.parseDouble(key));
 				}
-				double highest = Collections.max(keysetValues);
-				double lowest = Collections.min(keysetValues);
-				double binValue = (highest-lowest)/10;
+				Double highest = Collections.max(keysetValues);
+				Double lowest = Collections.min(keysetValues);
+				Double binValue = (highest-lowest)/10;
 				double bumper = 0;
 				if (lowest < 0) {
 					bumper = 0-lowest;
@@ -389,19 +390,59 @@ public class SeeDB {
 				for (String key : keyset){
 					double j = Double.parseDouble(key);
 					j += bumper;
+					j -= lowest;
 					int k = (int) (j / binValue);
 					if (k >= 10) {
 						k = 9;
 					}
 					tempBinList.get(k).aggregateValues.put(key, temp.aggregateValues.get(key));
 				}
-				binnedViews.add(tempBinList);
-				System.out.println(highest + " " + lowest);
+				AggregateGroupByView finalView = new AggregateGroupByView(temp.groupByAttribute, temp.aggregateAttribute);
+				for (int i = 0; i < tempBinList.size(); i++){
+					AggregateGroupByView binView = tempBinList.get(i);
+					double qSum = 0;
+					double qCount = 0;
+					double qAvg = 0;
+					double rSum = 0;
+					double rCount = 0;
+					double rAvg = 0;
+					for (String key : binView.aggregateValues.keySet()){
+						qSum += binView.aggregateValues.get(key).datasetValues[0].sum;
+						rSum += binView.aggregateValues.get(key).datasetValues[1].sum;
+						qAvg += binView.aggregateValues.get(key).datasetValues[0].average;
+						rAvg += binView.aggregateValues.get(key).datasetValues[1].average;
+						qCount += binView.aggregateValues.get(key).datasetValues[0].count;
+						rCount += binView.aggregateValues.get(key).datasetValues[1].count;
+					}
+					String attribute = new String();
+					if (i == 0){
+						attribute = lowest.toString() + " to " +  ((Double) (lowest + binValue*(i+1))).toString();
+					} else {
+						attribute = ((Double) (lowest + (binValue * i) + (binValue * .01))).toString() + " to " +  ((Double) (lowest + binValue*(i+1))).toString();
+					}
+					finalView.aggregateValues.put(attribute, new AggregateValuesWrapper());
+					finalView.aggregateValues.get(attribute).datasetValues[0].average = qAvg;
+					finalView.aggregateValues.get(attribute).datasetValues[1].average = rAvg;
+					finalView.aggregateValues.get(attribute).datasetValues[0].count = qCount;
+					finalView.aggregateValues.get(attribute).datasetValues[1].count = rCount;
+					finalView.aggregateValues.get(attribute).datasetValues[0].sum = qSum;
+					finalView.aggregateValues.get(attribute).datasetValues[1].sum = rSum;
+				}
+				binnedCompleted.add(finalView);
 			}
 		}
 		
-		for (List<AggregateGroupByView> binnedTemp : binnedViews){
-			binnedObjects.add(new BinnedView(binnedTemp, aggregate));
+		Iterator<View> iter = views.iterator();
+		
+		while (iter.hasNext()) {
+		    AggregateGroupByView vw = (AggregateGroupByView) iter.next();
+		    if (binnedDimensions.contains(vw.groupByAttribute)){
+		        iter.remove();
+		    }
+		}
+		
+		for (View view : binnedCompleted){
+			views.add(view);
 		}
 		
 		if (settings.useParallelExecution) {
