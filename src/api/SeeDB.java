@@ -319,7 +319,7 @@ public class SeeDB {
 	 * @return List of serialized difference results
 	 */
 	public List<View> computeDifference(List<String> dimensions, List<String> measures, 
-			String aggregate, List<String> binnedDimensions) {
+			String aggregate, List<String> binnedDimensions, Integer binNum) {
 		// get the table metadata and identify the attributes that we want to analyze
 		InputTablesMetadata[] queryMetadatas = this.getMetadata(inputQueries[0].tables,
 				inputQueries[1].tables, this.numQueries, dimensions, measures);
@@ -376,7 +376,7 @@ public class SeeDB {
 				}
 				Double highest = Collections.max(keysetValues);
 				Double lowest = Collections.min(keysetValues);
-				Double binValue = (highest-lowest)/10;
+				Double binValue = (highest-lowest)/binNum;
 				double bumper = 0;
 				if (lowest < 0) {
 					bumper = 0-lowest;
@@ -384,7 +384,7 @@ public class SeeDB {
 					highest += bumper;
 				}
 				List<AggregateGroupByView> tempBinList = new ArrayList<AggregateGroupByView>();
-				for (int i=0; i < 10; i++){
+				for (int i=0; i < binNum; i++){
 					tempBinList.add(i, new AggregateGroupByView(temp.groupByAttribute, temp.aggregateAttribute));
 				}
 				for (String key : keyset){
@@ -392,8 +392,8 @@ public class SeeDB {
 					j += bumper;
 					j -= lowest;
 					int k = (int) (j / binValue);
-					if (k >= 10) {
-						k = 9;
+					if (k >= binNum) {
+						k = (int) (binNum-1);
 					}
 					tempBinList.get(k).aggregateValues.put(key, temp.aggregateValues.get(key));
 				}

@@ -29,14 +29,14 @@ import views.View;
 public class seeDBPlot extends JFrame
 {
 	public seeDBPlot(String category, String dimension, String measure, List<View> result, 
-			String where, String aggregate)
+			String where, String aggregate, List<String> binnedDimensions)
 	{
 		super( "Dataset Results" );        
 		JFreeChart barChart = ChartFactory.createBarChart(
 				dimension + " vs " + aggregate + "(" + measure + ")",           
 				"Column",            
 				"Result",            
-				createDataset(result, where, category, aggregate),
+				createDataset(result, where, category, aggregate, binnedDimensions),
 				PlotOrientation.VERTICAL,           
 				true, true, false);
       
@@ -69,13 +69,16 @@ public class seeDBPlot extends JFrame
 		setContentPane( chartPanel ); 
 	}
 	
-	 private CategoryDataset createDataset(List<View> result, String where, String category, String aggregate) {
+	 private CategoryDataset createDataset(List<View> result, String where, String category, String aggregate, List<String> binnedDimensions) {
 		 HashMap<String, ArrayList<Double>> values = new HashMap<String, ArrayList<Double>>();
 		 final DefaultCategoryDataset dataset = new DefaultCategoryDataset( );
+		 
+		 String attribute = null;
 		 
 		 for (int i=0; i < result.size(); i++){
 			 AggregateGroupByView temp = (AggregateGroupByView) result.get(i);
 			 String id = temp.getId();
+			 attribute = temp.groupByAttribute;
 			 if (category.equals(id)){
 				 if (aggregate.equals("SUM")){
 					 values = temp.getSum();
@@ -94,15 +97,19 @@ public class seeDBPlot extends JFrame
 			 sort.add(key);
 		 }
 		 
-		 Collections.sort(sort, new Comparator<String>() {
-		     public int compare(String str1, String str2){
-		    	 String[] str1Parts = str1.split(" ");
-		    	 String[] str2Parts = str2.split(" ");
-		    	 Double db1 = Double.parseDouble(str1Parts[0]);
-		    	 Double db2 = Double.parseDouble(str2Parts[0]);
-		         return db1.compareTo(db2);
-		     }
-		 });
+		 if (binnedDimensions != null){
+			 if (binnedDimensions.contains(attribute)){
+				 Collections.sort(sort, new Comparator<String>() {
+				     public int compare(String str1, String str2){
+				    	 String[] str1Parts = str1.split(" ");
+				    	 String[] str2Parts = str2.split(" ");
+				    	 Double db1 = Double.parseDouble(str1Parts[0]);
+				    	 Double db2 = Double.parseDouble(str2Parts[0]);
+				         return db1.compareTo(db2);
+				     }
+				 });
+			 }
+		 }
 		 
 		 for (String key : sort){
 			 System.out.println(key + values.get(key));

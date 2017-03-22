@@ -42,6 +42,7 @@ public class GUI {
 	private String value = null;
 	private String operator = null;
 	private String aggregrate = null;
+	private Integer binValue = 0;
 	
 
 	/**
@@ -103,25 +104,31 @@ public class GUI {
 		
 		JLabel lblVisualisationBuilder = new JLabel("Aggregrate Function");
 		lblVisualisationBuilder.setFont(new Font("Tahoma", Font.PLAIN, 20));
-		lblVisualisationBuilder.setBounds(100, 0, 250, 30);
+		lblVisualisationBuilder.setBounds(90, 0, 250, 30);
 		panel_2.add(lblVisualisationBuilder);
 		
 		JRadioButton sum = new JRadioButton("Sum");
 		sum.setFont(new Font("Tahoma", Font.PLAIN, 18));
-		sum.setBounds(150, 50, 185, 20);
+		sum.setBounds(140, 50, 185, 20);
 		panel_2.add(sum);
 		
 		JRadioButton count = new JRadioButton("Count");
-		count.setBounds(150, 90, 185, 20);
+		count.setBounds(140, 90, 185, 20);
 		count.setFont(new Font("Tahoma", Font.PLAIN, 18));
 		panel_2.add(count);
 		
-		JButton btnBuildVisualisation = new JButton("Build Visualisation");
-		btnBuildVisualisation.setBounds(366, 75, 161, 29);
-		panel_2.add(btnBuildVisualisation);
+		JLabel lblBin = new JLabel("Bin Value");
+		lblBin.setFont(new Font("Tahoma", Font.PLAIN, 18));
+		lblBin.setBounds(350, 45, 150, 30);
+		panel_2.add(lblBin);
+		
+		JTextField textBin = new JTextField();
+		textBin.setBounds(440, 45, 80, 30);
+		textBin.setFont(new Font("Tahoma", Font.PLAIN, 18));
+		panel_2.add(textBin);
 		
 		JRadioButton avg = new JRadioButton("Average");
-		avg.setBounds(150, 130, 185, 20);
+		avg.setBounds(140, 130, 185, 20);
 		avg.setFont(new Font("Tahoma", Font.PLAIN, 18));
 		panel_2.add(avg);
 		
@@ -214,6 +221,7 @@ public class GUI {
 		     	} else if (count.isSelected()){
 		     		aggregrate = "COUNT";
 		     	}
+		     	binValue = Integer.parseInt(textBin.getText());
 		     	System.out.println(aggregrate);
 	        	if (dbsettings == null) {
 	        		JOptionPane.showMessageDialog(frame, "Please Specify A Database");
@@ -455,7 +463,7 @@ public class GUI {
 	        	 binnedDimensions.retainAll(list);
 	        	 System.out.println(binnedDimensions);
 	        	 graph.startSeeDB(userDimensions, userMeasures, query, dbsettings, aggregrate,
-	        			 binnedDimensions);
+	        			 binnedDimensions, binValue);
 	         }          
 	      });
 		JButton btnSelectAll = new JButton("Select All");
