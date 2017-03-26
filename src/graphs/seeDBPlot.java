@@ -14,6 +14,7 @@ import org.jfree.chart.ChartMouseListener;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.CategoryAxis;
+import org.jfree.chart.axis.CategoryLabelPositions;
 import org.jfree.chart.entity.CategoryItemEntity;
 import org.jfree.chart.plot.CategoryPlot;
 import org.jfree.chart.plot.PlotOrientation;
@@ -29,20 +30,21 @@ import views.View;
 public class seeDBPlot extends JFrame
 {
 	public seeDBPlot(String category, String dimension, String measure, List<View> result, 
-			String where, String aggregate, List<String> binnedDimensions)
+			String where, String aggregate, List<String> binnedDimensions, Boolean normalise)
 	{
 		super( "Dataset Results" );        
 		JFreeChart barChart = ChartFactory.createBarChart(
 				dimension + " vs " + aggregate + "(" + measure + ")",           
 				"Column",            
 				"Result",            
-				createDataset(result, where, category, aggregate, binnedDimensions),
+				createDataset(result, where, category, aggregate, binnedDimensions, normalise),
 				PlotOrientation.VERTICAL,           
 				true, true, false);
       
 		ChartPanel chartPanel = new ChartPanel( barChart );
 		CategoryPlot p = barChart.getCategoryPlot();
 		CategoryAxis a = p.getDomainAxis();
+		a.setCategoryLabelPositions(CategoryLabelPositions.UP_45);
 		a.setCategoryMargin(0);
 		BarRenderer r = (BarRenderer) p.getRenderer();
 		r.setItemMargin(0);
@@ -69,7 +71,8 @@ public class seeDBPlot extends JFrame
 		setContentPane( chartPanel ); 
 	}
 	
-	 private CategoryDataset createDataset(List<View> result, String where, String category, String aggregate, List<String> binnedDimensions) {
+	 private CategoryDataset createDataset(List<View> result, String where, 
+			 String category, String aggregate, List<String> binnedDimensions, Boolean normalise) {
 		 HashMap<String, ArrayList<Double>> values = new HashMap<String, ArrayList<Double>>();
 		 final DefaultCategoryDataset dataset = new DefaultCategoryDataset( );
 		 
@@ -81,11 +84,11 @@ public class seeDBPlot extends JFrame
 			 attribute = temp.groupByAttribute;
 			 if (category.equals(id)){
 				 if (aggregate.equals("SUM")){
-					 values = temp.getSum();
+					 values = temp.getSum(normalise);
 				 } else if (aggregate.equals("COUNT")){
-					 values = temp.getCount();
+					 values = temp.getCount(normalise);
 				 } else if (aggregate.equals("AVG")){
-					 values = temp.getAvg();
+					 values = temp.getAvg(normalise);
 				 }
 				 break;
 			 }

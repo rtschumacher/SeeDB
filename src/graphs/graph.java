@@ -45,7 +45,7 @@ public class graph extends JFrame
 	
 	private int index = 0;
    public graph( String applicationTitle , String chartTitle , String[] columns, Double[] results,
-		   List<View> result, String where, String aggregrate, List<String> binnedDimensions)
+		   List<View> result, String where, String aggregrate, List<String> binnedDimensions, Boolean normalise)
    {
       super( applicationTitle );        
       JFreeChart barChart = ChartFactory.createBarChart(
@@ -65,7 +65,8 @@ public class graph extends JFrame
     	    		CategoryItemEntity entity = (CategoryItemEntity) e.getEntity();
     	    		String category = entity.getCategory().toString();
     	    		String[] categories = category.split("__");
-    	    		datasets.add(index, new seeDBPlot(category, categories[0], categories[1], result, where, aggregrate, binnedDimensions));
+    	    		datasets.add(index, new seeDBPlot(category, categories[0], categories[1], result, 
+    	    				where, aggregrate, binnedDimensions, normalise));
     	    		datasets.get(index).pack( );        
     	    	    RefineryUtilities.centerFrameOnScreen(datasets.get(index));
     	    	    datasets.get(index).setVisible( true ); 
@@ -163,7 +164,7 @@ public class graph extends JFrame
    
    public static void startSeeDB(List<String> dimensions, List<String> measures, String query,
 		   DBSettings dbsettings, String aggregrate, List<String> binnedDimensions,
-		   Integer binValue)
+		   Integer binValue, Boolean normalise)
    {	
 	    //String defaultQuery1 = "SELECT * FROM bank WHERE age=35"
 	   	String defaultQuery1 = query;
@@ -173,6 +174,9 @@ public class graph extends JFrame
 		settings.differenceOperators = Lists.newArrayList();
 		settings.differenceOperators.add(DifferenceOperators.AGGREGATE);
 		settings.comparisonType = ComparisonType.ONE_DATASET_FULL;
+		if (normalise == false){
+			settings.normalizeDistributions = false;
+		}
 		DBConnection connection = new DBConnection();
 		if (!connection.hasConnection()) {
 			System.out.println("DB connection not specified, using default connection params");
@@ -228,7 +232,7 @@ public class graph extends JFrame
 	    for (int i = 0; i < result.size(); i++){
 	    	results[i] = (Double) result.get(i).getUtility(settings.distanceMetric, settings.normalizeDistributions);
 	    }
-		graph chart = new graph("SeeDB Results", "SeeDB Results", columns, results, result, where, aggregrate, binnedDimensions);
+		graph chart = new graph("SeeDB Results", "SeeDB Results", columns, results, result, where, aggregrate, binnedDimensions, normalise);
 	    chart.pack( );        
 	    RefineryUtilities.centerFrameOnScreen( chart );        
 	    chart.setVisible( true ); 

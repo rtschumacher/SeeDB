@@ -428,6 +428,7 @@ public class SeeDB {
 					finalView.aggregateValues.get(attribute).datasetValues[0].sum = qSum;
 					finalView.aggregateValues.get(attribute).datasetValues[1].sum = rSum;
 				}
+				tempBinList.clear();
 				binnedCompleted.add(finalView);
 			}
 		}

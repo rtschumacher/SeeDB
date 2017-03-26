@@ -87,7 +87,7 @@ public class AggregateGroupByView extends AggregateView implements Cloneable {
 		return ret;
 	}
 	
-	public HashMap<String, ArrayList<Double>> getSum(){
+	public HashMap<String, ArrayList<Double>> getSum(Boolean normalise){
 		populateAvg();
 		HashMap<String, ArrayList<Double>> ret = new HashMap<String, ArrayList<Double>>();
 		for (String key: this.aggregateValues.keySet()) {
@@ -95,14 +95,18 @@ public class AggregateGroupByView extends AggregateView implements Cloneable {
 			for (int i = 0; i < 2; i++) {
 				AggregateValues tmp = aggregateValues.get(key).datasetValues[i];
 				//System.out.println("Sum Normalised: " + tmp.sum);
-				temp.add(i, tmp.sumNormalized);
+				if (normalise) {
+					temp.add(i, tmp.sumNormalized);
+				} else {
+					temp.add(i, tmp.sum);
+				}
 			}
 			ret.put(key, temp);
 		}
 		return ret;
 	}
 	
-	public HashMap<String, ArrayList<Double>> getAvg(){
+	public HashMap<String, ArrayList<Double>> getAvg(Boolean normalise){
 		populateAvg();
 		HashMap<String, ArrayList<Double>> ret = new HashMap<String, ArrayList<Double>>();
 		for (String key: this.aggregateValues.keySet()) {
@@ -110,14 +114,18 @@ public class AggregateGroupByView extends AggregateView implements Cloneable {
 			for (int i = 0; i < 2; i++) {
 				AggregateValues tmp = aggregateValues.get(key).datasetValues[i];
 				//System.out.println("Sum Normalised: " + tmp.sum);
-				temp.add(i, tmp.averageNormalized);
+				if (normalise) {
+					temp.add(i, tmp.averageNormalized);
+				} else {
+					temp.add(i, tmp.average);
+				}
 			}
 			ret.put(key, temp);
 		}
 		return ret;
 	}
 	
-	public HashMap<String, ArrayList<Double>> getCount(){
+	public HashMap<String, ArrayList<Double>> getCount(Boolean normalise){
 		populateAvg();
 		HashMap<String, ArrayList<Double>> ret = new HashMap<String, ArrayList<Double>>();
 		for (String key: this.aggregateValues.keySet()) {
@@ -125,7 +133,11 @@ public class AggregateGroupByView extends AggregateView implements Cloneable {
 			for (int i = 0; i < 2; i++) {
 				AggregateValues tmp = aggregateValues.get(key).datasetValues[i];
 				//System.out.println("Sum Normalised: " + tmp.sum);
-				temp.add(i, tmp.countNormalized);
+				if (normalise) {
+					temp.add(i, tmp.countNormalized);
+				} else {
+					temp.add(i, tmp.count);
+				}
 			}
 			ret.put(key, temp);
 		}

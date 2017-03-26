@@ -43,6 +43,7 @@ public class GUI {
 	private String operator = null;
 	private String aggregrate = null;
 	private Integer binValue = 0;
+	private Boolean normalise;
 	
 
 	/**
@@ -73,31 +74,11 @@ public class GUI {
 	 */
 	private void initializeMainGUI() {
 		frame = new JFrame("SeeDB");
-		frame.setBounds(100, 100, 1161, 711);
+		frame.setBounds(100, 100, 620,500);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().setLayout(null);
-		panel.setBackground(Color.WHITE);
-		panel.setBounds(0, 461, 1139, 194);
-		frame.getContentPane().add(panel);
 		frame.setVisible(true);
-		panel.setLayout(null);
-		
-		JScrollBar scrollBar = new JScrollBar();
-		scrollBar.setOrientation(JScrollBar.HORIZONTAL);
-		scrollBar.setBounds(0, 174, 1139, 20);
-		panel.add(scrollBar);
-		
-		JLabel lblSeedbReccommendations = new JLabel("SeeDB Recommendations");
-		lblSeedbReccommendations.setBounds(492, 16, 180, 20);
-		panel.add(lblSeedbReccommendations);
-		
-		JPanel panel_1 = new JPanel();
-		panel_1.setBackground(Color.WHITE);
-		panel_1.setBounds(601, 0, 548, 462);
-		frame.getContentPane().add(panel_1);
-		
-		JLabel lblVisualisation = new JLabel("Visualisation");
-		panel_1.add(lblVisualisation);
+
 		panel_2.setBounds(0, 280, 603, 177);
 		frame.getContentPane().add(panel_2);
 		panel_2.setLayout(null);
@@ -126,6 +107,12 @@ public class GUI {
 		textBin.setBounds(440, 45, 80, 30);
 		textBin.setFont(new Font("Tahoma", Font.PLAIN, 18));
 		panel_2.add(textBin);
+		
+		JCheckBox normaliseCheckBox = new JCheckBox("Normalise");
+		normaliseCheckBox.setBounds(350, 85, 200, 30);
+		normaliseCheckBox.setFont(new Font("Tahoma", Font.PLAIN, 18));
+		normaliseCheckBox.setSelected(true);
+        panel_2.add(normaliseCheckBox);
 		
 		JRadioButton avg = new JRadioButton("Average");
 		avg.setBounds(140, 130, 185, 20);
@@ -214,6 +201,7 @@ public class GUI {
 	        	value = (String) list_6.getSelectedItem();
 		     	operator = (String) list_5.getSelectedItem();
 		     	query = "SELECT * FROM " + table + " WHERE " + column + operator + value;
+		     	normalise = normaliseCheckBox.isSelected();
 		     	if (sum.isSelected()){
 		     		aggregrate = "SUM";
 		     	} else if (avg.isSelected()){
@@ -221,7 +209,11 @@ public class GUI {
 		     	} else if (count.isSelected()){
 		     		aggregrate = "COUNT";
 		     	}
-		     	binValue = Integer.parseInt(textBin.getText());
+		     	try {
+		     		binValue = Integer.parseInt(textBin.getText());
+		     	} catch (Exception e1){
+		     		e1.printStackTrace();
+		     	}
 		     	System.out.println(aggregrate);
 	        	if (dbsettings == null) {
 	        		JOptionPane.showMessageDialog(frame, "Please Specify A Database");
@@ -462,8 +454,12 @@ public class GUI {
 	        	 List<String> binnedDimensions = new ArrayList<String>(userDimensions);
 	        	 binnedDimensions.retainAll(list);
 	        	 System.out.println(binnedDimensions);
+	        	 if (binValue == 0) {
+	        		 binnedDimensions.clear();
+	        	 }
 	        	 graph.startSeeDB(userDimensions, userMeasures, query, dbsettings, aggregrate,
-	        			 binnedDimensions, binValue);
+	        			 binnedDimensions, binValue, normalise);
+	        	 binValue = 0;
 	         }          
 	      });
 		JButton btnSelectAll = new JButton("Select All");
