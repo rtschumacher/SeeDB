@@ -45,7 +45,9 @@ public class seeDBPlot extends JFrame
 		CategoryPlot p = barChart.getCategoryPlot();
 		CategoryAxis a = p.getDomainAxis();
 		a.setCategoryLabelPositions(CategoryLabelPositions.UP_45);
-		a.setCategoryMargin(0);
+		if (normalise){
+			a.setCategoryMargin(0);
+		}
 		BarRenderer r = (BarRenderer) p.getRenderer();
 		r.setItemMargin(0);
 		chartPanel.addChartMouseListener(new ChartMouseListener() {
@@ -118,9 +120,17 @@ public class seeDBPlot extends JFrame
 			 System.out.println(key + values.get(key));
 			 for (int i = 0; i < 2; i++){
 				 if (i == 0){
-					 dataset.addValue(values.get(key).get(i), "Query Dataset (" + where + ")", key);
+					 if (normalise){
+						 dataset.addValue(values.get(key).get(i), "Query Dataset (" + where + ")", key);
+					 } else {
+						 dataset.addValue(values.get(key).get(i), key, "Query Dataset (" + where + ")");
+					 }
 				 } else if (i == 1) {
-					 dataset.addValue(values.get(key).get(i), "Reference Dataset", key);
+					 if (normalise){
+						 dataset.addValue(values.get(key).get(i), "Reference Dataset", key);
+					 } else {
+						 dataset.addValue(values.get(key).get(i), key, "Reference Dataset");
+					 }
 				 }
 			 }
 		 }
