@@ -163,7 +163,7 @@ public class graph extends JFrame
   }
    
    public static void startSeeDB(List<String> dimensions, List<String> measures, String query,
-		   DBSettings dbsettings, String aggregrate, List<String> binnedDimensions,
+		   DBSettings dbsettings, String aggregate, List<String> binnedDimensions,
 		   Integer binValue, Boolean normalise)
    {	
 	    //String defaultQuery1 = "SELECT * FROM bank WHERE age=35"
@@ -209,9 +209,9 @@ public class graph extends JFrame
 			System.out.println("Inside 4-1");
 			seedb.initialize(defaultQuery1, null, settings);
 			System.out.println("Inside 4-2");
-			result = seedb.computeDifference(dimensions, measures, aggregrate, binnedDimensions, binValue);
+			result = seedb.computeDifference(dimensions, measures, aggregate, binnedDimensions, binValue);
 			System.out.println("Inside 4-3");
-			Utils.printList(result);
+			//Utils.printList(result);
 			System.out.println("Inside 4-4");
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -232,7 +232,7 @@ public class graph extends JFrame
 	    for (int i = 0; i < result.size(); i++){
 	    	results[i] = (Double) result.get(i).getUtility(settings.distanceMetric, settings.normalizeDistributions);
 	    }
-		graph chart = new graph("SeeDB Results", "SeeDB Results", columns, results, result, where, aggregrate, binnedDimensions, normalise);
+		graph chart = new graph("SeeDB Results", "SeeDB Results", columns, results, result, where, aggregate, binnedDimensions, normalise);
 	    chart.pack( );        
 	    RefineryUtilities.centerFrameOnScreen( chart );        
 	    chart.setVisible( true ); 
