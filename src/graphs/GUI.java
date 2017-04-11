@@ -90,13 +90,23 @@ public class GUI {
 		
 		JRadioButton sum = new JRadioButton("Sum");
 		sum.setFont(new Font("Tahoma", Font.PLAIN, 18));
-		sum.setBounds(140, 50, 185, 20);
+		sum.setBounds(215, 50, 100, 20);
 		panel_2.add(sum);
 		
 		JRadioButton count = new JRadioButton("Count");
-		count.setBounds(140, 90, 185, 20);
+		count.setBounds(215, 90, 100, 20);
 		count.setFont(new Font("Tahoma", Font.PLAIN, 18));
 		panel_2.add(count);
+		
+		JRadioButton all = new JRadioButton("All");
+		all.setFont(new Font("Tahoma", Font.PLAIN, 18));
+		all.setBounds(70, 50, 100, 20);
+		panel_2.add(all);
+		
+		JRadioButton avg = new JRadioButton("Average");
+		avg.setBounds(70, 90, 100, 20);
+		avg.setFont(new Font("Tahoma", Font.PLAIN, 18));
+		panel_2.add(avg);
 		
 		JLabel lblBin = new JLabel("Bin Value");
 		lblBin.setFont(new Font("Tahoma", Font.PLAIN, 18));
@@ -114,17 +124,13 @@ public class GUI {
 		normaliseCheckBox.setSelected(true);
         panel_2.add(normaliseCheckBox);
 		
-		JRadioButton avg = new JRadioButton("Average");
-		avg.setBounds(140, 130, 185, 20);
-		avg.setFont(new Font("Tahoma", Font.PLAIN, 18));
-		panel_2.add(avg);
-		
 		ButtonGroup group = new ButtonGroup();
 	    group.add(avg);
 	    group.add(sum);
 	    group.add(count);
+	    group.add(all);
 	    
-	    sum.setSelected(true);
+	    all.setSelected(true);
 		
 		JPanel panel_3 = new JPanel();
 		panel_3.setBounds(0, 0, 650, 285);
@@ -174,12 +180,7 @@ public class GUI {
 		
 		JComboBox<String> list_5 = new JComboBox<>();
 		list_5.setFont(new Font("Tahoma", Font.PLAIN, 18));
-		list_5.addItem("=");
-		list_5.addItem("<>");
-		list_5.addItem(">");
-		list_5.addItem("<");
-		list_5.addItem(">=");
-		list_5.addItem("<=");
+
 		list_5.setBounds(123, 97, 185, 30);
 		panel_4.add(list_5);
 		
@@ -194,7 +195,7 @@ public class GUI {
 		panel_4.add(list_6);
 				
 		JButton btnGetRecommendations = new JButton("Get Results");
-		btnGetRecommendations.setBounds(351, 92, 161, 29);
+		btnGetRecommendations.setBounds(351, 97, 161, 29);
 		panel_4.add(btnGetRecommendations);
 		btnGetRecommendations.addActionListener(new ActionListener() {
 	         public void actionPerformed(ActionEvent e) {
@@ -208,6 +209,8 @@ public class GUI {
 		     		aggregrate = "AVG";
 		     	} else if (count.isSelected()){
 		     		aggregrate = "COUNT";
+		     	} else if (all.isSelected()){
+		     		aggregrate = "ALL";
 		     	}
 		     	try {
 		     		binValue = Integer.parseInt(textBin.getText());
@@ -245,14 +248,23 @@ public class GUI {
 			}
 		});
 		
-		for(ActionListener a: list_3.getActionListeners()) {
-		    a.actionPerformed(new ActionEvent(this, ActionEvent.ACTION_PERFORMED, null));
-		}
-		
 		list_4.addActionListener(new ActionListener() {
 	         public void actionPerformed(ActionEvent e) {
 	        	column = (String) list_4.getSelectedItem();
 	        	list_6.removeAllItems();
+	        	if (connection.getIntegerColumns("SELECT " + column + " FROM " + table).size() != 0){
+	        		list_5.removeAllItems();
+	        		list_5.addItem("=");
+	        		list_5.addItem("<>");
+	        		list_5.addItem(">");
+	        		list_5.addItem("<");
+	        		list_5.addItem(">=");
+	        		list_5.addItem("<=");
+	        	} else {
+	        		list_5.removeAllItems();
+	        		list_5.addItem("=");
+	        		list_5.addItem("<>");
+	        	}
 	        	for (String temp : connection.getUniqueValues(column, table)){
 					list_6.addItem(temp);
 				}
