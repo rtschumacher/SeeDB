@@ -492,9 +492,10 @@ public class SeeDB {
 		//System.out.println(views.get(0));
 		List<View> ret = views; //.subList(0, 10);
 		for (int i = 0; i < ret.size(); i++) {
-			((AggregateGroupByView) ret.get(i)).setFunction(aggregate);
-			System.out.println(((AggregateGroupByView) ret.get(i)).getId() + " " + ret.get(i).getUtility(settings.distanceMetric, settings.normalizeDistributions));
-			// username = in.nextLine(); 
+			if (!(aggregate.equals("ALL"))) {
+				((AggregateGroupByView) ret.get(i)).setFunction(aggregate);
+				System.out.println(((AggregateGroupByView) ret.get(i)).getId() + " " + ret.get(i).getUtility(settings.distanceMetric, settings.normalizeDistributions));
+			} 
 		}
 		return ret;
 	}	

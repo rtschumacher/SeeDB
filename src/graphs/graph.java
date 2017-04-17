@@ -6,6 +6,7 @@ import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Types;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -65,8 +66,13 @@ public class graph extends JFrame
     	    		CategoryItemEntity entity = (CategoryItemEntity) e.getEntity();
     	    		String category = entity.getCategory().toString();
     	    		String[] categories = category.split("__");
-    	    		datasets.add(index, new seeDBPlot(category, categories[0], categories[1], result, 
+    	    		if (aggregrate.equals("ALL")){
+    	    			datasets.add(index, new seeDBPlot(categories[0] + "__" + categories[1], categories[0], categories[1], result, 
+        	    				where, categories[2], binnedDimensions, normalise));
+    	    		} else {
+    	    			datasets.add(index, new seeDBPlot(category, categories[0], categories[1], result, 
     	    				where, aggregrate, binnedDimensions, normalise));
+    	    		}
     	    		datasets.get(index).pack( );        
     	    	    RefineryUtilities.centerFrameOnScreen(datasets.get(index));
     	    	    datasets.get(index).setVisible( true ); 
@@ -162,11 +168,33 @@ public class graph extends JFrame
 		return allColumns;
   }
    
+   private static List<Object> sortResult(String[] columns, Double[] result){
+	   List <String> tmpColumns = new ArrayList<String>(Arrays.asList(columns));
+	   List <Double> tmpResults = new ArrayList<Double>(Arrays.asList(result));
+	   columns = new String[tmpColumns.size()];
+	   result = new Double[tmpResults.size()];
+	   List<Object> ret = new ArrayList<Object>();
+	   Double max;
+	   String maxString;
+	   int i = 0;
+	   while (!tmpResults.isEmpty()){
+		   max = Collections.max(tmpResults);
+		   maxString = tmpColumns.get(tmpResults.indexOf(max));
+		   result[i] = max;
+		   columns[i] = maxString;
+		   tmpResults.remove(max);
+		   tmpColumns.remove(maxString);
+		   i++;
+	   }
+	   ret.add(columns);
+	   ret.add(result);
+	   return ret;
+   }
+   
    public static void startSeeDB(List<String> dimensions, List<String> measures, String query,
 		   DBSettings dbsettings, String aggregate, List<String> binnedDimensions,
 		   Integer binValue, Boolean normalise)
    {	
-	    //String defaultQuery1 = "SELECT * FROM bank WHERE age=35"
 	   	String defaultQuery1 = query;
 		SeeDB seedb = new SeeDB();
 		List<String> allColumns = new ArrayList<String>();
@@ -217,21 +245,33 @@ public class graph extends JFrame
 			e.printStackTrace();
 			return;
 		}
-	    String[] columns = new String[result.size()];
-	    Double[] results = new Double[result.size()];
-	    Collections.sort(result, new Comparator<View>(){
-	        public int compare(View s1, View s2) {
-	            return Double.compare(s1.getUtility(settings.distanceMetric, settings.normalizeDistributions),
-	            		s2.getUtility(settings.distanceMetric, settings.normalizeDistributions));
-	        }
-	    });
-	    Collections.reverse(result);
-	    for (int i = 0; i < result.size(); i++){
-	    	columns[i] = (String) ((AggregateGroupByView) result.get(i)).getId();
+		String[] columns = new String[result.size()];
+		Double[] results = new Double[result.size()];
+	    if (aggregate.equals("ALL")) {
+	    	columns = new String[result.size()*3];
+			results = new Double[result.size()*3];
+	    	for (int i = 0; i < result.size(); i++){
+	    		((AggregateGroupByView) result.get(i)).setFunction("SUM");
+	    		columns[3*i] = (String) ((AggregateGroupByView) result.get(i)).getId() + "__SUM";
+	    		results[3*i] = (Double) result.get(i).getUtility(settings.distanceMetric, settings.normalizeDistributions);
+	    		((AggregateGroupByView) result.get(i)).setFunction("COUNT");
+	    		columns[(3*i)+1] = (String) ((AggregateGroupByView) result.get(i)).getId() + "__COUNT";
+	    		results[(3*i)+1] = (Double) result.get(i).getUtility(settings.distanceMetric, settings.normalizeDistributions);
+	    		((AggregateGroupByView) result.get(i)).setFunction("AVG");
+	    		columns[(3*i)+2] = (String) ((AggregateGroupByView) result.get(i)).getId() + "__AVG";
+	    		results[(3*i)+2] = (Double) result.get(i).getUtility(settings.distanceMetric, settings.normalizeDistributions);
+	    	}
+	    } else {
+	    	for (int i = 0; i < result.size(); i++){
+	    		columns[i] = (String) ((AggregateGroupByView) result.get(i)).getId();
+	    	}
+	    	for (int i = 0; i < result.size(); i++){
+	    		results[i] = (Double) result.get(i).getUtility(settings.distanceMetric, settings.normalizeDistributions);
+	    	}
 	    }
-	    for (int i = 0; i < result.size(); i++){
-	    	results[i] = (Double) result.get(i).getUtility(settings.distanceMetric, settings.normalizeDistributions);
-	    }
+	    List<Object> sort = sortResult(columns, results);
+	    columns = (String[]) sort.get(0);
+	    results = (Double[]) sort.get(1);
 		graph chart = new graph("SeeDB Results", "SeeDB Results", columns, results, result, where, aggregate, binnedDimensions, normalise);
 	    chart.pack( );        
 	    RefineryUtilities.centerFrameOnScreen( chart );        
