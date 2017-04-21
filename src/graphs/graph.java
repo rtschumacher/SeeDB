@@ -264,8 +264,6 @@ public class graph extends JFrame
 	    } else {
 	    	for (int i = 0; i < result.size(); i++){
 	    		columns[i] = (String) ((AggregateGroupByView) result.get(i)).getId();
-	    	}
-	    	for (int i = 0; i < result.size(); i++){
 	    		results[i] = (Double) result.get(i).getUtility(settings.distanceMetric, settings.normalizeDistributions);
 	    	}
 	    }

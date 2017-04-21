@@ -221,6 +221,31 @@ public class DBConnection {
 		return values;
 	}
 	
+	public Integer getNumUniqueValues(String column, String table)
+	{
+		Integer numValues = 0;
+		Statement stmt = null;
+		ResultSet rs = null;
+		try {
+			// Get a statement from the connection
+		    stmt = connection.createStatement() ;
+
+		    // Execute the query
+		    rs = stmt.executeQuery("SELECT COUNT(DISTINCT " + column + ") FROM " + table + ";") ;
+		    while (rs.next ()) {
+		    	numValues = rs.getInt(1);
+			}
+			rs.close ();
+			stmt.close ();
+		}
+		catch(Exception e)
+		{
+			System.out.println("Error in executing query: " + e.getMessage());
+			e.printStackTrace();
+		}
+		return numValues;
+	}
+	
 	public List<String> getTables() {
 		List<String> tables = new ArrayList<String>();
 		DatabaseMetaData dbmd = null;

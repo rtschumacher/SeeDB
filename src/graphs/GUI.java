@@ -381,8 +381,15 @@ public class GUI {
 	
 	private void initializeDimensions(java.util.List<String> list) {
 		dimensions = new JFrame("Dimensions");
+		List<String> integerColumns = graph.getIntegerColumns(dbsettings, query);
+		for (int i=0; i < list.size(); i++){
+			if (integerColumns.contains(list.get(i)) && binValue <= 0 
+					&& connection.getNumUniqueValues(list.get(i), table) > 10){
+				list.remove(i);
+			}
+		}
+		list.remove(column);
 		dimensions.setBounds(200, 100, 750, ((list.size()/3 + 1)*50) + 150);
-		//dimensions.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		dimensions.getContentPane().setLayout(null);
 		JPanel mainPanel = new JPanel();
         mainPanel.setLayout(null);
@@ -396,8 +403,8 @@ public class GUI {
 			JCheckBox temp = new JCheckBox(list.get(i));
 			temp.setBounds(((i%3)*200)+100, ((i/3)*50)+20, 200, 50);
 			temp.setFont(new Font("Tahoma", Font.PLAIN, 18));
-	        checklistPanel.add(temp);
-	        checkboxes[i] = temp;
+			checklistPanel.add(temp);
+			checkboxes[i] = temp;
 		}
 		JButton btnSetDimensions = new JButton("Set Dimensions");
 		btnSetDimensions.setBounds(166, ((list.size()/3 + 1)*50)+30, 150, 30);
@@ -411,7 +418,7 @@ public class GUI {
 	        		 }
 	        	 }
 	        	 dimensions.setVisible(false);
-	        	 initializeMeasures(graph.getIntegerColumns(dbsettings, query));
+	        	 initializeMeasures(integerColumns);
 	         }          
 	      });
 		JButton btnSelectAll = new JButton("Select All");
@@ -431,6 +438,7 @@ public class GUI {
 	
 	private void initializeMeasures(java.util.List<String> list) {
 		measures = new JFrame("Measures");
+		list.remove(column);
 		measures.setBounds(200, 100, 750, ((list.size()/3 + 1)*50) + 150);
 		//measures.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		measures.getContentPane().setLayout(null);
