@@ -201,7 +201,8 @@ public class GUI {
 	         public void actionPerformed(ActionEvent e) {
 	        	value = (String) list_6.getSelectedItem();
 		     	operator = (String) list_5.getSelectedItem();
-		     	query = "SELECT * FROM " + table + " WHERE " + column + operator + value;
+		     	query = "SELECT * FROM " + table + " WHERE " + column + operator 
+		     			+ "'" + value + "'";
 		     	normalise = normaliseCheckBox.isSelected();
 		     	if (sum.isSelected()){
 		     		aggregrate = "SUM";
@@ -382,39 +383,40 @@ public class GUI {
 	private void initializeDimensions(java.util.List<String> list) {
 		dimensions = new JFrame("Dimensions");
 		List<String> integerColumns = graph.getIntegerColumns(dbsettings, query);
+		List<String> possibleDimensions = new ArrayList<String>();
 		for (int i=0; i < list.size(); i++){
-			if (integerColumns.contains(list.get(i)) && binValue <= 0 
-					&& connection.getNumUniqueValues(list.get(i), table) > 10){
-				list.remove(i);
+			if (!(integerColumns.contains(list.get(i)) && binValue <= 0 
+					&& connection.getNumUniqueValues(list.get(i), table) > 10)){
+				possibleDimensions.add(list.get(i));
 			}
 		}
-		list.remove(column);
-		dimensions.setBounds(200, 100, 750, ((list.size()/3 + 1)*50) + 150);
+		possibleDimensions.remove(column);
+		dimensions.setBounds(200, 100, 750, ((possibleDimensions.size()/3 + 1)*50) + 150);
 		dimensions.getContentPane().setLayout(null);
 		JPanel mainPanel = new JPanel();
         mainPanel.setLayout(null);
-        mainPanel.setBounds(0, 0, 750, ((list.size()/3 + 1)*50) + 150);
+        mainPanel.setBounds(0, 0, 750, ((possibleDimensions.size()/3 + 1)*50) + 150);
 		JPanel checklistPanel = new JPanel();
 		checklistPanel.setVisible(true);
 		checklistPanel.setLayout(null);
-		checklistPanel.setBounds(0, 0, 750, ((list.size()/3 + 1)*50) + 150);
-		JCheckBox[] checkboxes = new JCheckBox[list.size()];
-		for (int i=0; i < list.size(); i++){
-			JCheckBox temp = new JCheckBox(list.get(i));
+		checklistPanel.setBounds(0, 0, 750, ((possibleDimensions.size()/3 + 1)*50) + 150);
+		JCheckBox[] checkboxes = new JCheckBox[possibleDimensions.size()];
+		for (int i=0; i < possibleDimensions.size(); i++){
+			JCheckBox temp = new JCheckBox(possibleDimensions.get(i));
 			temp.setBounds(((i%3)*200)+100, ((i/3)*50)+20, 200, 50);
 			temp.setFont(new Font("Tahoma", Font.PLAIN, 18));
 			checklistPanel.add(temp);
 			checkboxes[i] = temp;
 		}
 		JButton btnSetDimensions = new JButton("Set Dimensions");
-		btnSetDimensions.setBounds(166, ((list.size()/3 + 1)*50)+30, 150, 30);
+		btnSetDimensions.setBounds(166, ((possibleDimensions.size()/3 + 1)*50)+30, 150, 30);
 		checklistPanel.add(btnSetDimensions);
 		btnSetDimensions.addActionListener(new ActionListener() {
 	         public void actionPerformed(ActionEvent e) {
 	        	 userDimensions.clear();
-	        	 for (int i=0; i < list.size(); i++){
+	        	 for (int i=0; i < possibleDimensions.size(); i++){
 	        		 if (checkboxes[i].isSelected()){
-	        			 userDimensions.add(list.get(i));
+	        			 userDimensions.add(possibleDimensions.get(i));
 	        		 }
 	        	 }
 	        	 dimensions.setVisible(false);
@@ -422,7 +424,7 @@ public class GUI {
 	         }          
 	      });
 		JButton btnSelectAll = new JButton("Select All");
-		btnSelectAll.setBounds(400, ((list.size()/3 + 1)*50)+30, 150, 30);
+		btnSelectAll.setBounds(400, ((possibleDimensions.size()/3 + 1)*50)+30, 150, 30);
 		checklistPanel.add(btnSelectAll);
 		btnSelectAll.addActionListener(new ActionListener() {
 	         public void actionPerformed(ActionEvent e) {
@@ -440,7 +442,6 @@ public class GUI {
 		measures = new JFrame("Measures");
 		list.remove(column);
 		measures.setBounds(200, 100, 750, ((list.size()/3 + 1)*50) + 150);
-		//measures.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		measures.getContentPane().setLayout(null);
 		JPanel mainPanel = new JPanel();
         mainPanel.setLayout(null);
