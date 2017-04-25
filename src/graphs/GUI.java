@@ -385,7 +385,8 @@ public class GUI {
 		List<String> integerColumns = graph.getIntegerColumns(dbsettings, query);
 		List<String> possibleDimensions = new ArrayList<String>();
 		for (int i=0; i < list.size(); i++){
-			if (!(integerColumns.contains(list.get(i)) && binValue <= 0 
+			if (connection.getNullColumn(list.get(i), table) == 0 && 
+					!(integerColumns.contains(list.get(i)) && binValue <= 0 
 					&& connection.getNumUniqueValues(list.get(i), table) > 10)){
 				possibleDimensions.add(list.get(i));
 			}
@@ -441,6 +442,11 @@ public class GUI {
 	private void initializeMeasures(java.util.List<String> list) {
 		measures = new JFrame("Measures");
 		list.remove(column);
+		for (String dim : userDimensions){
+			if (list.contains(dim)){
+				list.remove(dim);
+			}
+		}
 		measures.setBounds(200, 100, 750, ((list.size()/3 + 1)*50) + 150);
 		measures.getContentPane().setLayout(null);
 		JPanel mainPanel = new JPanel();
