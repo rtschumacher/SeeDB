@@ -1,12 +1,18 @@
 package graphs;
 
+import java.awt.BorderLayout;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 
+import javax.swing.Box;
+import javax.swing.BoxLayout;
 import javax.swing.JFrame;
+import javax.swing.JSlider;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartMouseEvent;
@@ -69,8 +75,33 @@ public class seeDBPlot extends JFrame
 			}
 
  	});
+		if (p.getCategories().size() > 20){
+			System.out.println("HERE");
+			JSlider slider = new JSlider(0, result.size() % 20);
+			slider.setMajorTickSpacing(1);
+			slider.setMinorTickSpacing(1);
+			slider.setSnapToTicks(true);
+			slider.setPaintTicks(true);
+			slider.setPaintTrack(true);
+			slider.addChangeListener(new ChangeListener() {
+				public void stateChanged(ChangeEvent e){
+					
+					//barChart.getCategoryPlot().setDataset(sliderDataset(null, slider.getValue()));
+				}
+			});
+			Box bot = new Box(BoxLayout.X_AXIS);
+			bot.add(slider);
+			this.add(bot, BorderLayout.SOUTH);
+			this.pack();
+		}
 		chartPanel.setPreferredSize(new java.awt.Dimension( 1800 , 1200 ) );        
-		setContentPane( chartPanel ); 
+		//setContentPane( chartPanel );
+		this.add(chartPanel);
+		this.pack();
+	}
+	
+	private CategoryDataset sliderDataset(CategoryDataset ds, int sliderValue){
+		return ds;
 	}
 	
 	 private CategoryDataset createDataset(List<View> result, String where, 
