@@ -21,6 +21,7 @@ import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.CategoryAxis;
 import org.jfree.chart.axis.CategoryLabelPositions;
+import org.jfree.chart.axis.ValueAxis;
 import org.jfree.chart.entity.CategoryItemEntity;
 import org.jfree.chart.plot.CategoryPlot;
 import org.jfree.chart.plot.PlotOrientation;
@@ -28,6 +29,7 @@ import org.jfree.chart.renderer.category.BarRenderer;
 import org.jfree.data.category.CategoryDataset;
 import org.jfree.data.category.DefaultCategoryDataset;
 import org.jfree.ui.ApplicationFrame;
+import org.jfree.data.category.SlidingCategoryDataset;
 
 import settings.DBSettings;
 import views.AggregateGroupByView;
@@ -50,6 +52,8 @@ public class seeDBPlot extends JFrame
 		ChartPanel chartPanel = new ChartPanel( barChart );
 		CategoryPlot p = barChart.getCategoryPlot();
 		CategoryAxis a = p.getDomainAxis();
+		ValueAxis n = p.getRangeAxis();
+		n.setAutoRange(false);
 		a.setCategoryLabelPositions(CategoryLabelPositions.UP_45);
 		if (normalise){
 			a.setCategoryMargin(0);
@@ -75,18 +79,21 @@ public class seeDBPlot extends JFrame
 			}
 
  	});
-		if (p.getCategories().size() > 20){
+		if (p.getCategories().size() > 10){
 			System.out.println("HERE");
-			JSlider slider = new JSlider(0, result.size() % 20);
+			int datasetValues = barChart.getCategoryPlot().getDataset().getColumnCount();
+			JSlider slider = new JSlider(0, (datasetValues / 20));
 			slider.setMajorTickSpacing(1);
 			slider.setMinorTickSpacing(1);
 			slider.setSnapToTicks(true);
 			slider.setPaintTicks(true);
 			slider.setPaintTrack(true);
+			SlidingCategoryDataset SlidingDataset = new SlidingCategoryDataset(barChart.getCategoryPlot().getDataset(), 0, 20);
+			barChart.getCategoryPlot().setDataset(SlidingDataset);
+			slider.setValue(0);
 			slider.addChangeListener(new ChangeListener() {
 				public void stateChanged(ChangeEvent e){
-					
-					//barChart.getCategoryPlot().setDataset(sliderDataset(null, slider.getValue()));
+					((SlidingCategoryDataset) barChart.getCategoryPlot().getDataset()).setFirstCategoryIndex(slider.getValue()*20);
 				}
 			});
 			Box bot = new Box(BoxLayout.X_AXIS);
