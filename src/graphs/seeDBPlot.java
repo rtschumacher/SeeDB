@@ -79,7 +79,7 @@ public class seeDBPlot extends JFrame
 			}
 
  	});
-		if (p.getCategories().size() > 10){
+		if (p.getCategories().size() > 20){
 			System.out.println("HERE");
 			int datasetValues = barChart.getCategoryPlot().getDataset().getColumnCount();
 			JSlider slider = new JSlider(0, (datasetValues / 20));
@@ -140,7 +140,7 @@ public class seeDBPlot extends JFrame
 			 sort.add(key);
 		 }
 		 
-		 if (binnedDimensions != null){
+		 if (binnedDimensions.size() != 0){
 			 if (binnedDimensions.contains(attribute)){
 				 Collections.sort(sort, new Comparator<String>() {
 				     public int compare(String str1, String str2){
@@ -152,6 +152,12 @@ public class seeDBPlot extends JFrame
 				     }
 				 });
 			 }
+		 } else {
+			 Collections.sort(sort, new Comparator<String>() {
+				 public int compare(String str1, String str2){
+			    	 return str1.compareToIgnoreCase(str2);
+			     }
+			 });
 		 }
 		 
 		 for (String key : sort){

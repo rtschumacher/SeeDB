@@ -35,6 +35,7 @@ public class GUI {
 	private final JPanel panel_2 = new JPanel();
 	private List<String> userMeasures = new ArrayList<String>();
 	private List<String> userDimensions = new ArrayList<String>();
+	List<String> integerColumns = new ArrayList<String>();
 	private List<String> tables = new ArrayList<String>();
 	private String query = null;
 	private String table = null;
@@ -382,7 +383,7 @@ public class GUI {
 	
 	private void initializeDimensions(java.util.List<String> list) {
 		dimensions = new JFrame("Dimensions");
-		List<String> integerColumns = graph.getIntegerColumns(dbsettings, query);
+		integerColumns = graph.getIntegerColumns(dbsettings, query);
 		List<String> possibleDimensions = new ArrayList<String>();
 		for (int i=0; i < list.size(); i++){
 			if (connection.getNullColumn(list.get(i), table) == 0 && 
@@ -421,7 +422,7 @@ public class GUI {
 	        		 }
 	        	 }
 	        	 dimensions.setVisible(false);
-	        	 initializeMeasures(integerColumns);
+	        	 initializeMeasures(new ArrayList<String>(integerColumns));
 	         }          
 	      });
 		JButton btnSelectAll = new JButton("Select All");
@@ -445,7 +446,7 @@ public class GUI {
 		for (String dim : userDimensions){
 			if (list.contains(dim)){
 				list.remove(dim);
-			}
+		    }
 		}
 		measures.setBounds(200, 100, 750, ((list.size()/3 + 1)*50) + 150);
 		measures.getContentPane().setLayout(null);
@@ -479,7 +480,7 @@ public class GUI {
 	        	 System.out.println(userDimensions);
 	        	 System.out.println(userMeasures);
 	        	 List<String> binnedDimensions = new ArrayList<String>(userDimensions);
-	        	 binnedDimensions.retainAll(list);
+	        	 binnedDimensions.retainAll(integerColumns);
 	        	 System.out.println(binnedDimensions);
 	        	 if (binValue == 0) {
 	        		 binnedDimensions.clear();
