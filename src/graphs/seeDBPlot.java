@@ -140,18 +140,16 @@ public class seeDBPlot extends JFrame
 			 sort.add(key);
 		 }
 		 
-		 if (binnedDimensions.size() != 0){
-			 if (binnedDimensions.contains(attribute)){
-				 Collections.sort(sort, new Comparator<String>() {
-				     public int compare(String str1, String str2){
-				    	 String[] str1Parts = str1.split(" ");
-				    	 String[] str2Parts = str2.split(" ");
-				    	 Double db1 = Double.parseDouble(str1Parts[0]);
-				    	 Double db2 = Double.parseDouble(str2Parts[0]);
-				         return db1.compareTo(db2);
-				     }
-				 });
-			 }
+		 if (binnedDimensions.contains(attribute)){
+			 Collections.sort(sort, new Comparator<String>() {
+				 public int compare(String str1, String str2){
+					 String[] str1Parts = str1.split(" ");
+				     String[] str2Parts = str2.split(" ");
+				     Double db1 = Double.parseDouble(str1Parts[0]);
+				     Double db2 = Double.parseDouble(str2Parts[0]);
+				     return db1.compareTo(db2);
+				 }
+			 });
 		 } else {
 			 Collections.sort(sort, new Comparator<String>() {
 				 public int compare(String str1, String str2){
