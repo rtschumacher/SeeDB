@@ -83,6 +83,9 @@ public class seeDBPlot extends JFrame
 			System.out.println("HERE");
 			int datasetValues = barChart.getCategoryPlot().getDataset().getColumnCount();
 			JSlider slider = new JSlider(0, (datasetValues / 20));
+			if (datasetValues % 20 == 0){
+				slider.setMaximum(datasetValues/20 - 1);
+			}
 			slider.setMajorTickSpacing(1);
 			slider.setMinorTickSpacing(1);
 			slider.setSnapToTicks(true);

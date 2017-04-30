@@ -422,7 +422,7 @@ public class GUI {
 	        		 }
 	        	 }
 	        	 dimensions.setVisible(false);
-	        	 initializeMeasures(new ArrayList<String>(integerColumns));
+	        	 initializeMeasures(integerColumns);
 	         }          
 	      });
 		JButton btnSelectAll = new JButton("Select All");
@@ -443,11 +443,6 @@ public class GUI {
 	private void initializeMeasures(java.util.List<String> list) {
 		measures = new JFrame("Measures");
 		list.remove(column);
-		for (String dim : userDimensions){
-			if (list.contains(dim)){
-				list.remove(dim);
-		    }
-		}
 		measures.setBounds(200, 100, 750, ((list.size()/3 + 1)*50) + 150);
 		measures.getContentPane().setLayout(null);
 		JPanel mainPanel = new JPanel();
