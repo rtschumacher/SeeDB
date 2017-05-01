@@ -366,6 +366,15 @@ public class SeeDB {
 			return null;
 		}
 		
+		Iterator<View> iterSameAttributes = views.iterator();
+		
+		while (iterSameAttributes.hasNext()) {
+		    AggregateGroupByView vw = (AggregateGroupByView) iterSameAttributes.next();
+		    if (vw.aggregateAttribute.equals(vw.groupByAttribute)){
+		    	iterSameAttributes.remove();
+		    }
+		}
+		
 		for (View view : views){
 			AggregateGroupByView temp = (AggregateGroupByView) view;
 			if (binnedDimensions.contains(temp.groupByAttribute)){

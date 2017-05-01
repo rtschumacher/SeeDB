@@ -1,5 +1,6 @@
 package graphs;
 
+import java.awt.BorderLayout;
 import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
@@ -11,19 +12,28 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import javax.swing.Box;
+import javax.swing.BoxLayout;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+import javax.swing.JSlider;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartMouseEvent;
 import org.jfree.chart.ChartMouseListener;
 import org.jfree.chart.ChartPanel; 
 import org.jfree.chart.JFreeChart;
+import org.jfree.chart.axis.CategoryAxis;
+import org.jfree.chart.axis.ValueAxis;
 import org.jfree.chart.entity.CategoryItemEntity;
 import org.jfree.chart.entity.XYItemEntity;
+import org.jfree.chart.plot.CategoryPlot;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.data.category.CategoryDataset; 
-import org.jfree.data.category.DefaultCategoryDataset; 
+import org.jfree.data.category.DefaultCategoryDataset;
+import org.jfree.data.category.SlidingCategoryDataset;
 import org.jfree.ui.ApplicationFrame; 
 import org.jfree.ui.RefineryUtilities;
 
@@ -58,6 +68,10 @@ public class graph extends JFrame
          false, true, false);
          
       ChartPanel chartPanel = new ChartPanel( barChart );
+      CategoryPlot p = barChart.getCategoryPlot();
+	  CategoryAxis a = p.getDomainAxis();
+	  ValueAxis n = p.getRangeAxis();
+	  n.setAutoRange(false);
       ArrayList<seeDBPlot> datasets = new ArrayList<seeDBPlot>();
       chartPanel.addChartMouseListener(new ChartMouseListener() {
 
@@ -89,8 +103,37 @@ public class graph extends JFrame
 			}
 
     	});
+      
+      if (p.getCategories().size() > 50){
+			System.out.println("HERE");
+			int datasetValues = barChart.getCategoryPlot().getDataset().getColumnCount();
+			JSlider slider = new JSlider(0, (datasetValues / 50));
+			if (datasetValues % 50 == 0){
+				slider.setMaximum(datasetValues/50 - 1);
+			}
+			slider.setMajorTickSpacing(1);
+			slider.setMinorTickSpacing(1);
+			slider.setSnapToTicks(true);
+			slider.setPaintTicks(true);
+			slider.setPaintTrack(true);
+			SlidingCategoryDataset SlidingDataset = new SlidingCategoryDataset(barChart.getCategoryPlot().getDataset(), 0, 50);
+			barChart.getCategoryPlot().setDataset(SlidingDataset);
+			slider.setValue(0);
+			slider.addChangeListener(new ChangeListener() {
+				public void stateChanged(ChangeEvent e){
+					((SlidingCategoryDataset) barChart.getCategoryPlot().getDataset()).setFirstCategoryIndex(slider.getValue()*50);
+				}
+			});
+			Box bot = new Box(BoxLayout.X_AXIS);
+			bot.add(slider);
+			this.add(bot, BorderLayout.SOUTH);
+			this.pack();
+		}
+      
       chartPanel.setPreferredSize(new java.awt.Dimension( 1800 , 1200 ) );        
-      setContentPane( chartPanel ); 
+      //setContentPane( chartPanel ); 
+      this.add(chartPanel);
+	  this.pack();
    }
    
    private CategoryDataset createDataset(String[] columns, Double[] results)

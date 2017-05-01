@@ -71,7 +71,8 @@ public class InputTablesMetadata {
 					String attribute = rs.getString("COLUMN_NAME");
 					if (this.measures.contains(attribute)){
 						this.measureAttributes.add(new Attribute(attribute));
-					} else if (this.dimensions.contains(attribute)){
+					}
+					if (this.dimensions.contains(attribute)){
 						this.dimensionAttributes.add(new Attribute(attribute));
 					}
 				}
