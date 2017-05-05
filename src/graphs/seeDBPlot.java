@@ -165,17 +165,9 @@ public class seeDBPlot extends JFrame
 			 System.out.println(key + values.get(key));
 			 for (int i = 0; i < 2; i++){
 				 if (i == 0){
-					 if (normalise){
-						 dataset.addValue(values.get(key).get(i), "Query Dataset (" + where + ")", key);
-					 } else {
-						 dataset.addValue(values.get(key).get(i), key, "Query Dataset (" + where + ")");
-					 }
+					 dataset.addValue(values.get(key).get(i), "Query Dataset (" + where + ")", key);
 				 } else if (i == 1) {
-					 if (normalise){
-						 dataset.addValue(values.get(key).get(i), "Reference Dataset", key);
-					 } else {
-						 dataset.addValue(values.get(key).get(i), key, "Reference Dataset");
-					 }
+					 dataset.addValue(values.get(key).get(i), "Reference Dataset", key);
 				 }
 			 }
 		 }
