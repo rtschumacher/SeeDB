@@ -45,6 +45,7 @@ public class GUI {
 	private String aggregrate = null;
 	private Integer binValue = 0;
 	private Boolean normalise;
+	private Boolean weighted;
 	
 
 	/**
@@ -111,19 +112,25 @@ public class GUI {
 		
 		JLabel lblBin = new JLabel("Bin Value");
 		lblBin.setFont(new Font("Tahoma", Font.PLAIN, 18));
-		lblBin.setBounds(350, 45, 150, 30);
+		lblBin.setBounds(360, 5, 150, 30);
 		panel_2.add(lblBin);
 		
 		JTextField textBin = new JTextField();
-		textBin.setBounds(440, 45, 80, 30);
+		textBin.setBounds(450, 5, 80, 30);
 		textBin.setFont(new Font("Tahoma", Font.PLAIN, 18));
 		panel_2.add(textBin);
 		
 		JCheckBox normaliseCheckBox = new JCheckBox("Normalise");
-		normaliseCheckBox.setBounds(350, 85, 200, 30);
+		normaliseCheckBox.setBounds(360, 45, 200, 30);
 		normaliseCheckBox.setFont(new Font("Tahoma", Font.PLAIN, 18));
-		normaliseCheckBox.setSelected(true);
+		normaliseCheckBox.setSelected(false);
         panel_2.add(normaliseCheckBox);
+        
+        JCheckBox weightedCheckBox = new JCheckBox("Weighted");
+		weightedCheckBox.setBounds(360, 85, 200, 30);
+		weightedCheckBox.setFont(new Font("Tahoma", Font.PLAIN, 18));
+		weightedCheckBox.setSelected(false);
+        panel_2.add(weightedCheckBox);
 		
 		ButtonGroup group = new ButtonGroup();
 	    group.add(avg);
@@ -205,6 +212,7 @@ public class GUI {
 		     	query = "SELECT * FROM " + table + " WHERE " + column + operator 
 		     			+ "'" + value + "'";
 		     	normalise = normaliseCheckBox.isSelected();
+		     	weighted = weightedCheckBox.isSelected();
 		     	if (sum.isSelected()){
 		     		aggregrate = "SUM";
 		     	} else if (avg.isSelected()){
@@ -481,7 +489,7 @@ public class GUI {
 	        		 binnedDimensions.clear();
 	        	 }
 	        	 graph.startSeeDB(userDimensions, userMeasures, query, dbsettings, aggregrate,
-	        			 binnedDimensions, binValue, normalise);
+	        			 binnedDimensions, binValue, normalise, table, weighted);
 	        	 binValue = 0;
 	         }          
 	      });

@@ -221,6 +221,38 @@ public class DBConnection {
 		return values;
 	}
 	
+	public Double getRange(String column, String table)
+	{
+		Double range = 0.0;
+		Double max = 0.0;
+		Double min = 0.0;
+		Statement stmt = null;
+		ResultSet rs = null;
+		try {
+			// Get a statement from the connection
+		    stmt = connection.createStatement() ;
+
+		    // Execute the query
+		    rs = stmt.executeQuery("SELECT MAX(" + column + ") FROM " + table + ";") ;
+		    while (rs.next ()) {
+		    	max = rs.getDouble(1);
+			}
+		    rs = stmt.executeQuery("SELECT MIN(" + column + ") FROM " + table + ";") ;
+		    while (rs.next ()) {
+		    	min = rs.getDouble(1);
+			}
+			rs.close ();
+			stmt.close ();
+		}
+		catch(Exception e)
+		{
+			System.out.println("Error in executing query: " + e.getMessage());
+			e.printStackTrace();
+		}
+		range = max-min;
+		return range;
+	}
+	
 	public Integer getNumUniqueValues(String column, String table)
 	{
 		Integer numValues = 0;

@@ -236,7 +236,7 @@ public class graph extends JFrame
    
    public static void startSeeDB(List<String> dimensions, List<String> measures, String query,
 		   DBSettings dbsettings, String aggregate, List<String> binnedDimensions,
-		   Integer binValue, Boolean normalise)
+		   Integer binValue, Boolean normalise, String table, Boolean weighted)
    {	
 	   	String defaultQuery1 = query;
 		SeeDB seedb = new SeeDB();
@@ -282,7 +282,7 @@ public class graph extends JFrame
 			System.out.println("Inside 4-2");
 			result = seedb.computeDifference(dimensions, measures, aggregate, binnedDimensions, binValue);
 			System.out.println("Inside 4-3");
-			//Utils.printList(result);
+			Utils.printList(result);
 			System.out.println("Inside 4-4");
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -296,18 +296,34 @@ public class graph extends JFrame
 	    	for (int i = 0; i < result.size(); i++){
 	    		((AggregateGroupByView) result.get(i)).setFunction("SUM");
 	    		columns[3*i] = (String) ((AggregateGroupByView) result.get(i)).getId() + "__SUM";
-	    		results[3*i] = (Double) result.get(i).getUtility(settings.distanceMetric, settings.normalizeDistributions);
+	    		if (weighted){
+	    			results[3*i] = (Double) result.get(i).getUtility(settings.distanceMetric, settings.normalizeDistributions) / connection.getRange(((AggregateGroupByView) result.get(i)).aggregateAttribute , table);
+	    		} else {
+	    			results[3*i] = (Double) result.get(i).getUtility(settings.distanceMetric, settings.normalizeDistributions);
+	    		}
 	    		((AggregateGroupByView) result.get(i)).setFunction("COUNT");
 	    		columns[(3*i)+1] = (String) ((AggregateGroupByView) result.get(i)).getId() + "__COUNT";
-	    		results[(3*i)+1] = (Double) result.get(i).getUtility(settings.distanceMetric, settings.normalizeDistributions);
+	    		if (weighted) {
+	    			results[(3*i)+1] = (Double) result.get(i).getUtility(settings.distanceMetric, settings.normalizeDistributions) / connection.getRange(((AggregateGroupByView) result.get(i)).aggregateAttribute , table);
+	    		} else {
+	    			results[(3*i)+1] = (Double) result.get(i).getUtility(settings.distanceMetric, settings.normalizeDistributions);
+	    		}
 	    		((AggregateGroupByView) result.get(i)).setFunction("AVG");
 	    		columns[(3*i)+2] = (String) ((AggregateGroupByView) result.get(i)).getId() + "__AVG";
-	    		results[(3*i)+2] = (Double) result.get(i).getUtility(settings.distanceMetric, settings.normalizeDistributions);
+	    		if (weighted) {
+	    			results[(3*i)+2] = (Double) result.get(i).getUtility(settings.distanceMetric, settings.normalizeDistributions) / connection.getRange(((AggregateGroupByView) result.get(i)).aggregateAttribute , table);
+	    		} else {
+	    			results[(3*i)+2] = (Double) result.get(i).getUtility(settings.distanceMetric, settings.normalizeDistributions);
+	    		}
 	    	}
 	    } else {
 	    	for (int i = 0; i < result.size(); i++){
 	    		columns[i] = (String) ((AggregateGroupByView) result.get(i)).getId();
-	    		results[i] = (Double) result.get(i).getUtility(settings.distanceMetric, settings.normalizeDistributions);
+	    		if (weighted) {
+	    			results[i] = (Double) result.get(i).getUtility(settings.distanceMetric, settings.normalizeDistributions)/connection.getRange(((AggregateGroupByView) result.get(i)).aggregateAttribute , table);
+	    		} else {
+	    			results[i] = (Double) result.get(i).getUtility(settings.distanceMetric, settings.normalizeDistributions);
+	    		}
 	    	}
 	    }
 	    List<Object> sort = sortResult(columns, results);

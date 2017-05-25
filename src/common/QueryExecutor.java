@@ -189,12 +189,14 @@ public class QueryExecutor {
 			// execute query that puts results in temp table
 			List<String> optSQLQuery = optQuery.getSQLQuery(true);
 			long start = System.currentTimeMillis();
-			//System.out.println(optSQLQuery.get(0));
+			System.out.println(optSQLQuery.get(0));
 			connection.executeQueryWithoutResult(optSQLQuery.get(0));
 			tempTableCreationTime += System.currentTimeMillis() - start;
 			
 			// process the data from the temp table
 			List<String> queries = optQuery.getSQLForParentQueries(true);
+			System.out.println(queries);
+			System.out.println(optQuery.derivedFrom);
 			for (int i = 0; i < optQuery.derivedFrom.size();i++) {
 				executeQuery(optQuery.derivedFrom.get(i), queries.get(i*2), connection, 1);
 				executeQuery(optQuery.derivedFrom.get(i), queries.get(i*2+1), connection, 2);

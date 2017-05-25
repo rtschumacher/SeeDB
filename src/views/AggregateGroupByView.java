@@ -1,5 +1,6 @@
 package views;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -73,14 +74,15 @@ public class AggregateGroupByView extends AggregateView implements Cloneable {
 		ret += "aggregateValues:" + this.aggregateAttribute + ";";
 		ret += "groupByValues:" + this.groupByAttribute + ";";
 		ret += "data:[[";
+		DecimalFormat df = new DecimalFormat("###.##");
 		for (String key: this.aggregateValues.keySet()) {
 			ret += key + ":";
 			for (int i = 0; i < 2; i++) {
 				AggregateValues tmp = aggregateValues.get(key).datasetValues[i];
 				//System.out.println("Count Normalised: " + tmp.countNormalized);
-				ret += tmp.countNormalized + ";";
+				ret += df.format(tmp.count) + ";";
 				//System.out.println("Sum Normalised: " + tmp.sum);
-				ret += tmp.sumNormalized + ";";
+				ret += df.format(tmp.sum) + ";";
 			}
 		}
 		ret += "]]";
